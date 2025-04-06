@@ -1,5 +1,6 @@
 package game;
 
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
 
@@ -11,9 +12,9 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class LevelEditorScene extends Scene {
     private float[] vertexArray = {
-         0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,
+         100.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f,  100.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+         100.5f,  100.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,
         -0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f
     };
 
@@ -32,6 +33,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        this.camera = new Camera(new Vector2f());
         shaderProgram = new Shader("assets/shaders/vertex.glsl", "assets/shaders/fragment.glsl");
         shaderProgram.compile();
 
@@ -67,6 +69,8 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(float dt) {
         shaderProgram.use();
+        shaderProgram.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        shaderProgram.uploadMat4f("uView", camera.getViewMatrix());
 
         glBindVertexArray(vaoID);
 
