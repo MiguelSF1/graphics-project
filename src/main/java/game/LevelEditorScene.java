@@ -3,6 +3,7 @@ package game;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
+import util.Time;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -71,6 +72,7 @@ public class LevelEditorScene extends Scene {
         shaderProgram.use();
         shaderProgram.uploadMat4f("uProjection", camera.getProjectionMatrix());
         shaderProgram.uploadMat4f("uView", camera.getViewMatrix());
+        shaderProgram.uploadFloat("uTime", Time.getTime());
 
         glBindVertexArray(vaoID);
 
