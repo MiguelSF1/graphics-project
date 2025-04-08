@@ -50,6 +50,10 @@ public class Window {
         return Window.window;
     }
 
+    public static Scene getScene() {
+        return get().currentScene;
+    }
+
     public void run() {
         init();
         loop();
@@ -103,7 +107,7 @@ public class Window {
         while (!GLFW.glfwWindowShouldClose(glfwWindow)) {
             GLFW.glfwPollEvents();
 
-            GL11.glClearColor(r, g, b, 1.0f);
+            GL11.glClearColor(1, 1, 1, 1.0f);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0.0f) {
@@ -116,7 +120,7 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
 
-            //System.out.println("FPS: " + 1.0f / dt);
+            System.out.println("FPS: " + 1.0f / dt);
         }
     }
 }
