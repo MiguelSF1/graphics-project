@@ -27,15 +27,14 @@ public class Window {
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        width = vidMode.width();
+        width = vidMode.width(); // maybe put values here
         height = vidMode.height();
-
 
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
         if (windowHandle == NULL) {
@@ -105,7 +104,7 @@ public class Window {
         try {
             resizeFunc.call();
         } catch (Exception e) {
-            System.err.println("Error on window resize");
+           // check this
         }
     }
 

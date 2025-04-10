@@ -4,10 +4,21 @@ import java.util.*;
 
 public class Scene {
 
+    private Projection projection;
+
     private Map<String, Mesh> meshMap;
 
-    public Scene() {
+    public Scene(int width, int height) {
         meshMap = new HashMap<>();
+        projection = new Projection(width, height);
+    }
+
+    public Projection getProjection() {
+        return projection;
+    }
+
+    public void resize(int width, int height) {
+        projection.updateProjMatrix(width, height);
     }
 
     public void addMesh(String meshId, Mesh mesh) {
