@@ -15,6 +15,7 @@ public class Window {
     private int height;
     private Callable<Void> resizeFunc;
     private int width;
+    private MouseInput mouseInput;
 
     public Window(String title, Callable<Void> resizeFunc) {
         this.resizeFunc = resizeFunc;
@@ -49,6 +50,8 @@ public class Window {
             keyCallBack(key, action);
         });
 
+        mouseInput = new MouseInput(windowHandle);
+
         glfwMakeContextCurrent(windowHandle);
 
         glfwSwapInterval(1);
@@ -82,6 +85,10 @@ public class Window {
 
     public long getWindowHandle() {
         return windowHandle;
+    }
+
+    public MouseInput getMouseInput() {
+        return mouseInput;
     }
 
     public boolean isKeyPressed(int keyCode) {

@@ -42,6 +42,7 @@ public class Engine {
             long now = System.currentTimeMillis();
             deltaUpdate += (now - initialTime) / timeU;
 
+            window.getMouseInput().input();
             appLogic.input(window, scene, now - initialTime);
 
             if (deltaUpdate >= 1) {
