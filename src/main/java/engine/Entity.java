@@ -50,7 +50,7 @@ public class Entity {
     }
 
     public void setRotation(float x, float y, float z, float angle) {
-        this.rotation.fromAxisAngleRad(x, y, z, angle);
+        this.rotation.fromAxisAngleRad(x, y, z, angle); // convert axis angle into a quaternion, allows smooth interpolation between rotations
     }
 
     public void setScale(float scale) {
@@ -58,6 +58,6 @@ public class Entity {
     }
 
     public void updateModelMatrix() {
-        modelMatrix.translationRotateScale(position, rotation, scale);
+        modelMatrix.translationRotateScale(position, rotation, scale); // multiplica na ordem correta (scale, rotate, translate), does the 3 transformations on the model matrix to get world cord
     }
 }

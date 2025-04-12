@@ -33,7 +33,7 @@ public class Camera {
     }
 
     public void moveBackwards(float inc) {
-        viewMatrix.positiveZ(direction).negate().mul(inc);
+        viewMatrix.positiveZ(direction).negate().mul(inc); // get view matrix cord Z and negate it to get forward dir of camera then add the increment
         position.sub(direction);
         recalculate();
     }
