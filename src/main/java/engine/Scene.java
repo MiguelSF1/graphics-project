@@ -10,13 +10,13 @@ public class Scene {
 
     private TextureCache textureCache;
 
-    private Camera camera;
+    private Player player;
 
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
         projection = new Projection(width, height);
         textureCache = new TextureCache();
-        camera = new Camera();
+        addPlayer();
     }
 
     public void addEntity(Entity entity) {
@@ -37,7 +37,11 @@ public class Scene {
     }
 
     public Camera getCamera() {
-        return camera;
+        return player.getCamera();
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public void resize(int width, int height) {
@@ -54,5 +58,22 @@ public class Scene {
 
     public Map<String, Model> getModelMap() {
         return modelMap;
+    }
+
+    private void addPlayer() {
+        Texture texture = getTextureCache().createTexture("resources/models/cube/cube.png");
+        Material material = new Material();
+        material.setTexturePath(texture.getTexturePath());
+        List<Material> materialList = new ArrayList<>();
+        materialList.add(material);
+
+        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/cube/cube.obj");
+        material.getMeshList().add(mesh);
+        Model stallModel = new Model("cube-model", materialList);
+        addModel(stallModel);
+
+        player = new Player("player", stallModel.getId());
+        player.setPosition(0, 0, -5);
+        addEntity(player);
     }
 }
