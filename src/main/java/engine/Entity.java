@@ -2,20 +2,21 @@ package engine;
 
 import org.joml.*;
 
+import java.lang.Math;
+
 public class Entity {
     private final String id;
     private final String modelId;
-    private Matrix4f modelMatrix;
+
     private Vector3f position;
-    private Quaternionf rotation;
+    private Vector3f rotation;
     private float scale;
 
     public Entity(String id, String modelId) {
         this.id = id;
         this.modelId = modelId;
-        modelMatrix = new Matrix4f();
         position = new Vector3f();
-        rotation = new Quaternionf();
+        rotation = new Vector3f();
         scale = 1;
     }
 
@@ -27,7 +28,16 @@ public class Entity {
         return modelId;
     }
 
+    // multiplica na ordem correta (translate, rotate, scale), does the 3 transformations on the model matrix to get world cord
     public Matrix4f getModelMatrix() {
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.identity();
+        modelMatrix.translate(position.x, position.y, position.z);
+        modelMatrix.rotateX((float) Math.toRadians(rotation.x));
+        modelMatrix.rotateY((float) Math.toRadians(rotation.y));
+        modelMatrix.rotateZ((float) Math.toRadians(rotation.z));
+        modelMatrix.scale(scale);
+
         return modelMatrix;
     }
 
@@ -35,7 +45,7 @@ public class Entity {
         return position;
     }
 
-    public Quaternionf getRotation() {
+    public Vector3f getRotation() {
         return rotation;
     }
 
@@ -47,23 +57,28 @@ public class Entity {
         position.x = x;
         position.y = y;
         position.z = z;
-
-        updateModelMatrix();
     }
 
-    public void setRotation(float x, float y, float z, float angle) {
-        this.rotation.fromAxisAngleRad(x, y, z, angle); // convert axis angle into a quaternion, allows smooth interpolation between rotations
-
-        updateModelMatrix();
+    public void setRotation(float x, float y, float z) {
+        // degrees
+        rotation.x = x;
+        rotation.y = y;
+        rotation.z = z;
     }
 
     public void setScale(float scale) {
         this.scale = scale;
-
-        updateModelMatrix();
     }
 
-    private void updateModelMatrix() {
-        modelMatrix.translationRotateScale(position, rotation, scale); // multiplica na ordem correta (scale, rotate, translate), does the 3 transformations on the model matrix to get world cord
+    public void incrementPosition(float x, float y, float z) {
+        position.x += x;
+        position.y += y;
+        position.z += z;
+    }
+
+    public void incrementRotation(float x, float y, float z) {
+        rotation.x += x;
+        rotation.y += y;
+        rotation.z += z;
     }
 }

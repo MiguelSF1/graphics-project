@@ -2,88 +2,63 @@ package engine;
 
 import org.joml.*;
 
+import java.lang.Math;
+
 public class Camera {
 
-    private Vector3f direction;
     private Vector3f position;
-    private Vector3f right;
-    private Vector2f rotation;
-    private Vector3f up;
-    private Matrix4f viewMatrix;
-
+    private Vector3f orientation; // like upside down or something else
+    private float yaw = 0;        // angle to rotate horizontally
+    private float pitch = 0;      // angle to rotate vertically
 
     public Camera() {
-        direction = new Vector3f();
-        right = new Vector3f();
-        up = new Vector3f();
-        position = new Vector3f();
-        viewMatrix = new Matrix4f();
-        rotation = new Vector2f();
+        position = new Vector3f(0, 0, 0);
+        orientation = new Vector3f(0, 1, 0);
     }
 
-    public void addRotation(float x, float y) {
-        rotation.add(x, y);
-        recalculate();
+    public void moveCamera(float x, float y, float z) {
+        Vector3f offset = new Vector3f(x, y, z);
+        offset.rotateY((float) Math.toRadians(yaw), offset); // make sure that when the camera is rotated the direction of the keyboard movement also changes
+
+        position.x += offset.x;
+        position.y += offset.y;
+        position.z += offset.z;
     }
 
-    public Vector3f getPosition() {
-        return position;
+    // changing angles (needed to rotate camera)
+    public void setLookDir(float mouseX, float mouseY) {
+        yaw = mouseX * -0.1f;
+        pitch = mouseY * -0.1f;
     }
 
     public Matrix4f getViewMatrix() {
+        Vector3f lookPoint = new Vector3f(0, 0, -1); // is direction, need to make it relative to where camera is
+
+        lookPoint.rotateY((float) Math.toRadians(yaw), lookPoint);
+        lookPoint.rotateX((float) Math.toRadians(pitch), lookPoint);
+
+        lookPoint.add(position);
+
+        Matrix4f viewMatrix = new Matrix4f();
+        viewMatrix.lookAt(position, lookPoint, orientation, viewMatrix);
         return viewMatrix;
     }
 
-    public void moveBackwards(float inc) {
-        viewMatrix.positiveZ(direction).negate().mul(inc); // get view matrix cord Z and negate it to get forward dir of camera then add the increment
-        position.sub(direction);
-        recalculate();
+    public float getPitch() {
+        return pitch;
     }
 
-    public void moveDown(float inc) {
-        viewMatrix.positiveY(up).mul(inc);
-        position.sub(up);
-        recalculate();
+    public float getYaw() {
+        return yaw;
     }
 
-    public void moveForward(float inc) {
-        viewMatrix.positiveZ(direction).negate().mul(inc);
-        position.add(direction);
-        recalculate();
-    }
-
-    public void moveLeft(float inc) {
-        viewMatrix.positiveX(right).mul(inc);
-        position.sub(right);
-        recalculate();
-    }
-
-    public void moveRight(float inc) {
-        viewMatrix.positiveX(right).mul(inc);
-        position.add(right);
-        recalculate();
-    }
-
-    public void moveUp(float inc) {
-        viewMatrix.positiveY(up).mul(inc);
-        position.add(up);
-        recalculate();
-    }
-
-    private void recalculate() {
-        viewMatrix.identity()
-                .rotateX(rotation.x)
-                .rotateY(rotation.y)
-                .translate(-position.x, -position.y, -position.z);
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
     }
 
     public void setPosition(float x, float y, float z) {
-        position.set(x, y, z);
-        recalculate();
-    }
-
-    public void setRotation(float x, float y) {
-        rotation.set(x, y);
-        recalculate();
+        position.x = x;
+        position.y = y;
+        position.z = z;
     }
 }

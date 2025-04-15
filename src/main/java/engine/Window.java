@@ -15,7 +15,7 @@ public class Window {
     private int height;
     private Callable<Void> resizeFunc;
     private int width;
-    private MouseInput mouseInput;
+    private double mouseX, mouseY;
 
     public Window(String title, Callable<Void> resizeFunc) {
         this.resizeFunc = resizeFunc;
@@ -50,7 +50,15 @@ public class Window {
             keyCallBack(key, action);
         });
 
-        mouseInput = new MouseInput(windowHandle);
+        glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(windowHandle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+        glfwSetCursorPosCallback(windowHandle, (window, xpos, ypos) -> {
+            mouseX = xpos;
+            mouseY = ypos;
+        });
 
         glfwMakeContextCurrent(windowHandle);
 
@@ -83,12 +91,16 @@ public class Window {
         return width;
     }
 
-    public long getWindowHandle() {
-        return windowHandle;
+    public double getMouseX() {
+        return mouseX;
     }
 
-    public MouseInput getMouseInput() {
-        return mouseInput;
+    public double getMouseY() {
+        return mouseY;
+    }
+
+    public long getWindowHandle() {
+        return windowHandle;
     }
 
     public boolean isKeyPressed(int keyCode) {
