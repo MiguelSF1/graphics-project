@@ -12,11 +12,14 @@ public class Scene {
 
     private Player player;
 
+    private Camera camera;
+
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
         projection = new Projection(width, height);
         textureCache = new TextureCache();
         addPlayer();
+        camera = new Camera(player);
     }
 
     public void addEntity(Entity entity) {
@@ -37,7 +40,7 @@ public class Scene {
     }
 
     public Camera getCamera() {
-        return player.getCamera();
+        return camera;
     }
 
     public Player getPlayer() {

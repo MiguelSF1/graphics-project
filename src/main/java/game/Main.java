@@ -4,8 +4,6 @@ import engine.*;
 import engine.Scene;
 
 public class Main implements EngineLogic {
-
-
     public static void main(String[] args) {
         Main main = new Main();
         Engine gameEng = new Engine("Graphics Project", main);
@@ -27,6 +25,7 @@ public class Main implements EngineLogic {
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis) {
         scene.getPlayer().input(diffTimeMillis, window);
+        scene.getCamera().move(diffTimeMillis, window);
     }
 
     @Override
