@@ -35,6 +35,12 @@ public class Player extends Entity {
             curUpSpeed = -MOVEMENT_SPEED;
         }
 
+        if (window.isKeyPressed(GLFW_KEY_LEFT)) {
+            incrementPosition(dt * -MOVEMENT_SPEED, 0, 0);
+        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
+            incrementPosition(dt * MOVEMENT_SPEED, 0, 0);
+        }
+
         incrementRotation(0, curTurnSpeed * dt, 0);
 
         float distance = dt * curSpeed;
