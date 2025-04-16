@@ -44,6 +44,14 @@ public class Camera {
         position.z = player.getPosition().z + horizDist;
     }
 
+    public void move1stPerson(float dt, Window window) {
+        setLookDir((float) window.getMouseX(), (float) window.getMouseY());
+
+        position.x = player.getPosition().x;
+        position.y = player.getPosition().y;
+        position.z = player.getPosition().z - 1.0f;
+    }
+
     // changing angles (needed to rotate camera)
     public void setLookDir(float mouseX, float mouseY) {
         yaw = mouseX * -0.1f;

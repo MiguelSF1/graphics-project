@@ -15,6 +15,7 @@ public class Scene {
     private Camera playerCamera;
     private Camera leftCamera;
     private Camera rightCamera;
+    private Camera camera1stPerson;
 
     private int curCameraIdx;
 
@@ -31,6 +32,8 @@ public class Scene {
 
         rightCamera = new Camera(player);
         rightCamera.setPosition(10, 0, 0);
+
+        camera1stPerson = new Camera(player);
 
         curCameraIdx = 0;
     }
@@ -57,9 +60,11 @@ public class Scene {
             return playerCamera;
         } else if (curCameraIdx == 1) {
             return leftCamera;
+        } else if (curCameraIdx == 2) {
+            return rightCamera;
         }
 
-        return rightCamera;
+        return camera1stPerson;
     }
 
     public Player getPlayer() {
