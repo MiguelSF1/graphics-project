@@ -11,7 +11,7 @@ public class Camera {
     private float yaw = 0;        // angle to rotate horizontally
     private float pitch = 0;      // angle to rotate vertically
 
-    Player player;
+    private Player player;
 
     private float distanceFromPlayer = 5;
 
@@ -48,28 +48,6 @@ public class Camera {
     public void setLookDir(float mouseX, float mouseY) {
         yaw = mouseX * -0.1f;
         pitch = mouseY * -0.1f;
-    }
-
-    public void moveCamera(float x, float y, float z) {
-        Vector3f offset = new Vector3f(x, y, z);
-        offset.rotateY((float) Math.toRadians(yaw), offset); // make sure that when the camera is rotated the direction of the keyboard movement also changes
-
-        position.x += offset.x;
-        position.y += offset.y;
-        position.z += offset.z;
-    }
-
-
-    public float getPitch() {
-        return pitch;
-    }
-
-    public float getYaw() {
-        return yaw;
-    }
-
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
     }
 
     public void setPosition(float x, float y, float z) {

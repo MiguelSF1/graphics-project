@@ -12,14 +12,27 @@ public class Scene {
 
     private Player player;
 
-    private Camera camera;
+    private Camera playerCamera;
+    private Camera leftCamera;
+    private Camera rightCamera;
+
+    private int curCameraIdx;
 
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
         projection = new Projection(width, height);
         textureCache = new TextureCache();
+
         addPlayer();
-        camera = new Camera(player);
+        playerCamera = new Camera(player);
+
+        leftCamera = new Camera(player);
+        leftCamera.setPosition(-10, 0, 0);
+
+        rightCamera = new Camera(player);
+        rightCamera.setPosition(10, 0, 0);
+
+        curCameraIdx = 0;
     }
 
     public void addEntity(Entity entity) {
@@ -40,11 +53,25 @@ public class Scene {
     }
 
     public Camera getCamera() {
-        return camera;
+        if (curCameraIdx == 0) {
+            return playerCamera;
+        } else if (curCameraIdx == 1) {
+            return leftCamera;
+        }
+
+        return rightCamera;
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public int getCurCameraIdx() {
+        return curCameraIdx;
+    }
+
+    public void selectCamera(int idx) {
+        curCameraIdx = idx;
     }
 
     public void resize(int width, int height) {
