@@ -37,8 +37,8 @@ public class Camera {
     public void move(float dt, Window window) {
         setLookDir((float) window.getMouseX(), (float) window.getMouseY());
 
-        float horizDist = (float) (distanceFromPlayer * Math.cos(Math.toRadians(20))); // 20 degrees angle to look at player
-        float vertiDist = (float) (distanceFromPlayer * Math.sin(Math.toRadians(20)));
+        float horizDist = (float) (distanceFromPlayer * Math.cos(Math.toRadians(20))); // 20 degrees angle to look at player (yaw)
+        float vertiDist = (float) (distanceFromPlayer * Math.sin(Math.toRadians(20))); // right angle triangle
         position.x = player.getPosition().x;
         position.y = player.getPosition().y + vertiDist;
         position.z = player.getPosition().z + horizDist;
@@ -49,7 +49,7 @@ public class Camera {
 
         position.x = player.getPosition().x;
         position.y = player.getPosition().y;
-        position.z = player.getPosition().z - 1.0f;
+        position.z = player.getPosition().z - 3.0f;
     }
 
     // changing angles (needed to rotate camera)

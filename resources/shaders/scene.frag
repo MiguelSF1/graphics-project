@@ -1,7 +1,5 @@
 #version 330
 
-in vec3 outPosition;
-in vec3 outNormal;
 in vec2 outTextCoord;
 
 out vec4 fragColor;

@@ -46,8 +46,8 @@ public class Player extends Entity {
         float distance = dt * curSpeed;
         float jump = dt * curUpSpeed;
 
-        float dx = (float) (distance * Math.sin(Math.toRadians(getRotation().y)));
-        float dz = (float) (distance * Math.cos(Math.toRadians(getRotation().y)));
+        float dx = (float) (distance * Math.sin(Math.toRadians(getRotation().y))); // right angle triangle | lado oposto
+        float dz = (float) (distance * Math.cos(Math.toRadians(getRotation().y))); // lado adjacente
 
         incrementPosition(dx, jump, dz);
     }

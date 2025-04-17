@@ -22,20 +22,18 @@ public class Main implements EngineLogic {
 
     @Override
     public void init(Window window, Scene scene, Render render) {
-        Texture texture = scene.getTextureCache().createTexture("resources/models/cube/cube.png");
         Material material = new Material();
-        material.setTexturePath(texture.getTexturePath());
         List<Material> materialList = new ArrayList<>();
         materialList.add(material);
 
-        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/cube/cube.obj");
+        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/table/table.obj");
         material.getMeshList().add(mesh);
-        Model cubeModel = new Model("cube-model", materialList);
-        scene.addModel(cubeModel);
+        Model tableModel = new Model("table-model", materialList);
+        scene.addModel(tableModel);
 
-        Entity cubeEntity = new Entity("cube-entity", "cube-model");
-        cubeEntity.setPosition(0, 0, -10);
-        scene.addEntity(cubeEntity);
+        Entity tableEntity = new Entity("table-entity", "table-model");
+        tableEntity.setPosition(0, 0, -10);
+        scene.addEntity(tableEntity);
     }
 
     @Override
