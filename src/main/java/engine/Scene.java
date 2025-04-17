@@ -96,18 +96,16 @@ public class Scene {
     }
 
     private void addPlayer() {
-        Texture texture = getTextureCache().createTexture("resources/models/cube/cube.png");
         Material material = new Material();
-        material.setTexturePath(texture.getTexturePath());
         List<Material> materialList = new ArrayList<>();
         materialList.add(material);
 
-        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/cube/cube.obj");
+        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
         material.getMeshList().add(mesh);
-        Model stallModel = new Model("cube-model", materialList);
-        addModel(stallModel);
+        Model playerModel = new Model("player-model", materialList);
+        addModel(playerModel);
 
-        player = new Player("player", stallModel.getId());
+        player = new Player("player", playerModel.getId());
         player.setPosition(0, 0, -5);
         addEntity(player);
     }
