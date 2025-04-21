@@ -9,6 +9,9 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Main implements EngineLogic {
+
+    Terrain terrain;
+
     public static void main(String[] args) {
         Main main = new Main();
         Engine gameEng = new Engine("Graphics Project", main);
@@ -34,6 +37,7 @@ public class Main implements EngineLogic {
         Entity tableEntity = new Entity("table-entity", "table-model");
         tableEntity.setPosition(0, 0, -10);
         scene.addEntity(tableEntity);
+
     }
 
     @Override

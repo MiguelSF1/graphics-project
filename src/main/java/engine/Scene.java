@@ -12,6 +12,8 @@ public class Scene {
 
     private Player player;
 
+    private Skybox skybox;
+
     private Camera playerCamera;
     private Camera leftCamera;
     private Camera rightCamera;
@@ -23,6 +25,8 @@ public class Scene {
         modelMap = new HashMap<>();
         projection = new Projection(width, height);
         textureCache = new TextureCache();
+
+        skybox = new Skybox();
 
         addPlayer();
         playerCamera = new Camera(player);
@@ -69,6 +73,10 @@ public class Scene {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Skybox getSkybox() {
+        return skybox;
     }
 
     public int getCurCameraIdx() {

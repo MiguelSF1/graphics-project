@@ -1,6 +1,8 @@
 package engine;
 
 
+import org.joml.*;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -9,12 +11,16 @@ import static org.lwjgl.opengl.GL30.*;
 public class SceneRender {
 
     private ShaderProgram shaderProgram;
+    private ShaderProgram skyboxShaderProgram;
 
     private UniformsMap uniformsMap;
+    private UniformsMap skyboxUniformsMap;
 
     public SceneRender() {
         shaderProgram = new ShaderProgram("resources/shaders/scene.vert", "resources/shaders/scene.frag");
         createUniforms();
+        skyboxShaderProgram = new ShaderProgram("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
+        createSkyboxUniforms();
     }
 
     public void cleanup() {
@@ -29,9 +35,15 @@ public class SceneRender {
         uniformsMap.createUniform("txtSampler");
     }
 
+    private void createSkyboxUniforms() {
+        skyboxUniformsMap = new UniformsMap(skyboxShaderProgram.getProgramId());
+        skyboxUniformsMap.createUniform("projectionMatrix");
+        skyboxUniformsMap.createUniform("viewMatrix");
+        skyboxUniformsMap.createUniform("cubeMap");
+    }
+
     public void render(Scene scene) {
         shaderProgram.bind();
-
         uniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
         uniformsMap.setUniform("viewMatrix", scene.getCamera().getViewMatrix());
         uniformsMap.setUniform("txtSampler", 0);
@@ -57,7 +69,16 @@ public class SceneRender {
         }
 
         glBindVertexArray(0);
-
         shaderProgram.unbind();
+
+        skyboxShaderProgram.bind();
+        skyboxUniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
+        skyboxUniformsMap.setUniform("viewMatrix", new Matrix4f(new Matrix3f(scene.getCamera().getViewMatrix())));
+        skyboxUniformsMap.setUniform("cubeMap", 0);
+        scene.getSkybox().bind();
+
+        scene.getSkybox().unbind();
+        skyboxShaderProgram.unbind();
+
     }
 }

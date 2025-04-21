@@ -21,6 +21,10 @@ public class Camera {
         this.player = player;
     }
 
+    public Vector3f getPosition() {
+        return position;
+    }
+
     public Matrix4f getViewMatrix() {
         Vector3f lookPoint = new Vector3f(0, 0, -1); // is direction, need to make it relative to where camera is
 
