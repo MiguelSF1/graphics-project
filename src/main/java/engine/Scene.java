@@ -1,5 +1,7 @@
 package engine;
 
+import org.joml.Vector3f;
+
 import java.util.*;
 
 public class Scene {
@@ -116,5 +118,32 @@ public class Scene {
         player = new Player("player", playerModel.getId(), playerMesh);
         player.setPosition(0, 0, -5);
         addEntity(player);
+    }
+
+    public void checkPlayerMove(long dt, Window window) {
+        Vector3f playerMove = player.getMove(dt, window);
+
+        Vector3f oldPos = new Vector3f(player.getPosition());
+        player.incrementPosition(playerMove.x, playerMove.y, playerMove.z);
+
+        AABB playerBox = player.getAABB();
+
+        boolean collided = false;
+        for (Model model : modelMap.values()) {
+            for (Entity e : model.getEntitiesList()) {
+                if (e == player) continue;
+
+                AABB otherBox = e.getAABB();
+                if (AABB.intersects(playerBox, otherBox)) {
+                    collided = true;
+                    break;
+                }
+            }
+            if (collided) break;
+        }
+
+        if (collided) {
+            player.setPosition(oldPos.x, oldPos.y, oldPos.z);
+        }
     }
 }

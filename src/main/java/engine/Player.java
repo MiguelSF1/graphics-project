@@ -1,5 +1,7 @@
 package engine;
 
+import org.joml.Vector3f;
+
 import java.lang.Math;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -13,7 +15,7 @@ public class Player extends Entity {
         super(id, modelId, mesh);
     }
 
-    public void input(long dt, Window window) {
+    public Vector3f getMove(long dt, Window window) {
         float curSpeed = 0;
         if (window.isKeyPressed(GLFW_KEY_W)) {
             curSpeed = -MOVEMENT_SPEED;
@@ -51,6 +53,6 @@ public class Player extends Entity {
         float dx = (float) (distance * Math.sin(Math.toRadians(getRotation().y))); // right angle triangle | lado oposto
         float dz = (float) (distance * Math.cos(Math.toRadians(getRotation().y))); // lado adjacente
 
-        incrementPosition(dx + strafe, jump, dz);
+        return new Vector3f(dx + strafe, jump, dz);
     }
 }

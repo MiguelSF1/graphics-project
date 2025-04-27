@@ -43,7 +43,7 @@ public class Main implements EngineLogic {
 
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis) {
-        scene.getPlayer().input(diffTimeMillis, window);
+        scene.checkPlayerMove(diffTimeMillis, window);
 
         if (window.isKeyPressed(GLFW_KEY_Z)) {
             scene.selectCamera(0);
@@ -67,13 +67,6 @@ public class Main implements EngineLogic {
 
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
-        Player player = scene.getPlayer();
 
-        AABB playerBox = player.getAABB();
-        AABB tableBox = tableEntity.getAABB();
-
-        if (AABB.intersects(playerBox, tableBox)) {
-            System.out.println("Intersect: " + diffTimeMillis);
-        }
     }
 }
