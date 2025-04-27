@@ -31,7 +31,7 @@ public class Terrain {
         terrainEntities = new Entity[numRows][numCols];
         for (int j = 0; j < numRows; j++) {
             for (int i = 0; i < numCols; i++) {
-                Entity entity = new Entity("TERRAIN_" + j + "_" + i, "quad-model");
+                Entity entity = new Entity("TERRAIN_" + j + "_" + i, "quad-model", mesh);
                 terrainEntities[j][i] = entity;
                 scene.addEntity(entity);
             }

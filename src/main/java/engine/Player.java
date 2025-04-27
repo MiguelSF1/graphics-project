@@ -9,8 +9,8 @@ public class Player extends Entity {
     private static final float MOVEMENT_SPEED = 0.005f;
     private static final float TURN_SPEED = 0.040f;
 
-    public Player(String id, String modelId) {
-        super(id, modelId);
+    public Player(String id, String modelId, Mesh mesh) {
+        super(id, modelId, mesh);
     }
 
     public void input(long dt, Window window) {
@@ -35,20 +35,22 @@ public class Player extends Entity {
             curUpSpeed = -MOVEMENT_SPEED;
         }
 
+        float strafe = 0;
         if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-            incrementPosition(dt * -MOVEMENT_SPEED, 0, 0);
+            strafe = -MOVEMENT_SPEED;
         } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-            incrementPosition(dt * MOVEMENT_SPEED, 0, 0);
+            strafe = MOVEMENT_SPEED;
         }
 
         incrementRotation(0, curTurnSpeed * dt, 0);
 
         float distance = dt * curSpeed;
         float jump = dt * curUpSpeed;
+        strafe *= dt;
 
         float dx = (float) (distance * Math.sin(Math.toRadians(getRotation().y))); // right angle triangle | lado oposto
         float dz = (float) (distance * Math.cos(Math.toRadians(getRotation().y))); // lado adjacente
 
-        incrementPosition(dx, jump, dz);
+        incrementPosition(dx + strafe, jump, dz);
     }
 }

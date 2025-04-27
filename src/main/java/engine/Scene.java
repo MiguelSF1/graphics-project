@@ -108,12 +108,12 @@ public class Scene {
         List<Material> materialList = new ArrayList<>();
         materialList.add(material);
 
-        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
-        material.getMeshList().add(mesh);
+        Mesh playerMesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
+        material.getMeshList().add(playerMesh);
         Model playerModel = new Model("player-model", materialList);
         addModel(playerModel);
 
-        player = new Player("player", playerModel.getId());
+        player = new Player("player", playerModel.getId(), playerMesh);
         player.setPosition(0, 0, -5);
         addEntity(player);
     }

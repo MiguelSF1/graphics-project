@@ -1,5 +1,6 @@
 package engine;
 
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.*;
 
@@ -13,6 +14,9 @@ public class Mesh {
     private int numVertices;
     private int vaoId;
     private List<Integer> vboIdList;
+
+    private Vector3f aabbMin;
+    private Vector3f aabbMax;
 
     public Mesh(float[] positions, float[] normals, float[] textCoords, int[] indices) {
         numVertices = indices.length;
@@ -66,6 +70,17 @@ public class Mesh {
         MemoryUtil.memFree(normalsBuffer);
         MemoryUtil.memFree(textCoordsBuffer);
         MemoryUtil.memFree(indicesBuffer);
+
+
+        aabbMin = new Vector3f(Float.POSITIVE_INFINITY);
+        aabbMax = new Vector3f(Float.NEGATIVE_INFINITY);
+        for (int i = 0; i < positions.length; i += 3) {
+            float x = positions[i];
+            float y = positions[i+1];
+            float z = positions[i+2];
+            aabbMin.min(new Vector3f(x, y, z));
+            aabbMax.max(new Vector3f(x, y, z));
+        }
     }
 
     public void cleanup() {
@@ -80,4 +95,8 @@ public class Mesh {
     public final int getVaoId() {
         return vaoId;
     }
+
+    public Vector3f getAabbMin() { return new Vector3f(aabbMin); }
+
+    public Vector3f getAabbMax() { return new Vector3f(aabbMax); }
 }

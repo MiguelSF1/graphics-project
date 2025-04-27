@@ -10,7 +10,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Main implements EngineLogic {
 
-    Terrain terrain;
+    Entity tableEntity;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -29,14 +29,15 @@ public class Main implements EngineLogic {
         List<Material> materialList = new ArrayList<>();
         materialList.add(material);
 
-        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/table/table.obj");
-        material.getMeshList().add(mesh);
+        Mesh tableMesh = OBJLoader.loadMeshFromOBJ("resources/models/table/table.obj");
+        material.getMeshList().add(tableMesh);
         Model tableModel = new Model("table-model", materialList);
         scene.addModel(tableModel);
 
-        Entity tableEntity = new Entity("table-entity", "table-model");
+        tableEntity = new Entity("table-entity", "table-model", tableMesh);
         tableEntity.setPosition(0, 0, -10);
         scene.addEntity(tableEntity);
+
 
     }
 
@@ -66,6 +67,13 @@ public class Main implements EngineLogic {
 
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
+        Player player = scene.getPlayer();
 
+        AABB playerBox = player.getAABB();
+        AABB tableBox = tableEntity.getAABB();
+
+        if (AABB.intersects(playerBox, tableBox)) {
+            System.out.println("Intersect: " + diffTimeMillis);
+        }
     }
 }
