@@ -43,7 +43,7 @@ public class Main implements EngineLogic {
 
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis) {
-        scene.checkPlayerMove(diffTimeMillis, window);
+        scene.getPlayer().input(diffTimeMillis, window, scene);
 
         if (window.isKeyPressed(GLFW_KEY_Z)) {
             scene.selectCamera(0);

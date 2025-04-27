@@ -10,12 +10,18 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
 public class Player extends Entity {
     private static final float MOVEMENT_SPEED = 0.005f;
     private static final float TURN_SPEED = 0.040f;
+    private static final float GRAVITY = -0.00005f;
+    private static final float JUMP_POWER = 0.0175f;
+    private static final float TERRAIN_HEIGHT = 0;
+
+    private float curUpSpeed = 0;
+    private boolean isInAir = false;
 
     public Player(String id, String modelId, Mesh mesh) {
         super(id, modelId, mesh);
     }
 
-    public Vector3f getMove(long dt, Window window) {
+    public void input(long dt, Window window, Scene scene) {
         float curSpeed = 0;
         if (window.isKeyPressed(GLFW_KEY_W)) {
             curSpeed = -MOVEMENT_SPEED;
@@ -30,11 +36,12 @@ public class Player extends Entity {
             curTurnSpeed = -TURN_SPEED;
         }
 
-        float curUpSpeed = 0;
-        if (window.isKeyPressed(GLFW_KEY_UP)) {
-            curUpSpeed = MOVEMENT_SPEED;
-        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            curUpSpeed = -MOVEMENT_SPEED;
+
+        if (window.isKeyPressed(GLFW_KEY_SPACE)) {
+            if (!isInAir) {
+                curUpSpeed = JUMP_POWER;
+                isInAir = true;
+            }
         }
 
         float strafe = 0;
@@ -44,15 +51,27 @@ public class Player extends Entity {
             strafe = MOVEMENT_SPEED;
         }
 
+        Vector3f oldPos = new Vector3f(getPosition());
+
         incrementRotation(0, curTurnSpeed * dt, 0);
 
-        float distance = dt * curSpeed;
-        float jump = dt * curUpSpeed;
-        strafe *= dt;
+        float horizontalMove = curSpeed * dt;
 
-        float dx = (float) (distance * Math.sin(Math.toRadians(getRotation().y))); // right angle triangle | lado oposto
-        float dz = (float) (distance * Math.cos(Math.toRadians(getRotation().y))); // lado adjacente
+        float strafeMove = strafe * dt;
+        float dx = (float) (horizontalMove * Math.sin(Math.toRadians(getRotation().y))); // right angle triangle | lado oposto
+        float dz = (float) (horizontalMove * Math.cos(Math.toRadians(getRotation().y))); // lado adjacente
+        float dy = curUpSpeed * dt;
 
-        return new Vector3f(dx + strafe, jump, dz);
+        incrementPosition(dx + strafeMove, dy ,dz);
+
+        curUpSpeed += GRAVITY * dt;
+
+        if (getPosition().y < TERRAIN_HEIGHT + 1.5f) {
+            setPosition(getPosition().x, TERRAIN_HEIGHT + 1.5f, getPosition().z);
+            curUpSpeed = 0;
+            isInAir = false;
+        }
+
+        scene.checkPlayerMove(oldPos);
     }
 }

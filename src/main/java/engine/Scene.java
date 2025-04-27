@@ -124,12 +124,7 @@ public class Scene {
         addEntity(player);
     }
 
-    public void checkPlayerMove(long dt, Window window) {
-        Vector3f playerMove = player.getMove(dt, window);
-
-        Vector3f oldPos = new Vector3f(player.getPosition());
-        player.incrementPosition(playerMove.x, playerMove.y, playerMove.z);
-
+    public void checkPlayerMove(Vector3f oldPos) {
         AABB playerBox = player.getAABB();
 
         boolean collided = false;
