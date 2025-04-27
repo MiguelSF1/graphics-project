@@ -12,13 +12,15 @@ public class Player extends Entity {
     private static final float TURN_SPEED = 0.040f;
     private static final float GRAVITY = -0.00005f;
     private static final float JUMP_POWER = 0.0175f;
-    private static final float TERRAIN_HEIGHT = 0;
 
     private float curUpSpeed = 0;
     private boolean isInAir = false;
 
-    public Player(String id, String modelId, Mesh mesh) {
+    private Terrain terrain;
+
+    public Player(String id, String modelId, Mesh mesh, Terrain terrain) {
         super(id, modelId, mesh);
+        this.terrain = terrain;
     }
 
     public void input(long dt, Window window, Scene scene) {
@@ -66,8 +68,9 @@ public class Player extends Entity {
 
         curUpSpeed += GRAVITY * dt;
 
-        if (getPosition().y < TERRAIN_HEIGHT + 1.5f) {
-            setPosition(getPosition().x, TERRAIN_HEIGHT + 1.5f, getPosition().z);
+        float terrainHeight = terrain.getTerrainHeight(getPosition().x, getPosition().z);
+        if (getPosition().y < terrainHeight + 2.5f) {
+            setPosition(getPosition().x, terrainHeight + 2.5f, getPosition().z);
             curUpSpeed = 0;
             isInAir = false;
         }

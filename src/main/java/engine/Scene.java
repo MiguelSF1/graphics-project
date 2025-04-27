@@ -32,6 +32,8 @@ public class Scene {
 
         skybox = new Skybox();
 
+        generateTerrain();
+
         addPlayer();
         playerCamera = new Camera(player);
 
@@ -45,7 +47,6 @@ public class Scene {
 
         curCameraIdx = 0;
 
-        generateTerrain();
     }
 
     public void addEntity(Entity entity) {
@@ -119,7 +120,7 @@ public class Scene {
         Model playerModel = new Model("player-model", materialList);
         addModel(playerModel);
 
-        player = new Player("player", playerModel.getId(), playerMesh);
+        player = new Player("player", playerModel.getId(), playerMesh, terrain);
         player.setPosition(50, 1.5f, 100);
         addEntity(player);
     }
@@ -142,12 +143,11 @@ public class Scene {
         }
 
         if (collided) {
-            player.setPosition(oldPos.x, oldPos.y, oldPos.z);
+            //player.setPosition(oldPos.x, oldPos.y, oldPos.z);
         }
     }
 
     private void generateTerrain() {
-        int[][] hm = new Heightmap("resources/models/terrain/heightmap.png").getGray();
         terrain = new Terrain();
 
         Texture texture = getTextureCache().createTexture("resources/models/grass/grass.png");
