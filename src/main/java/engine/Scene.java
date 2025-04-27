@@ -16,6 +16,8 @@ public class Scene {
 
     private Skybox skybox;
 
+    private Terrain terrain;
+
     private Camera playerCamera;
     private Camera leftCamera;
     private Camera rightCamera;
@@ -42,6 +44,8 @@ public class Scene {
         camera1stPerson = new Camera(player);
 
         curCameraIdx = 0;
+
+        generateTerrain();
     }
 
     public void addEntity(Entity entity) {
@@ -116,7 +120,7 @@ public class Scene {
         addModel(playerModel);
 
         player = new Player("player", playerModel.getId(), playerMesh);
-        player.setPosition(0, 0, -5);
+        player.setPosition(50, 1.5f, 100);
         addEntity(player);
     }
 
@@ -145,5 +149,24 @@ public class Scene {
         if (collided) {
             player.setPosition(oldPos.x, oldPos.y, oldPos.z);
         }
+    }
+
+    private void generateTerrain() {
+        int[][] hm = new Heightmap("resources/models/terrain/heightmap.png").getGray();
+        terrain = new Terrain();
+
+        Texture texture = getTextureCache().createTexture("resources/models/grass/grass.png");
+        Material material = new Material();
+        material.setTexturePath(texture.getTexturePath());
+        List<Material> materialList = new ArrayList<>();
+        materialList.add(material);
+
+        material.getMeshList().add(terrain.generateMesh());
+        Model groundModel = new Model("ground-model", materialList);
+        addModel(groundModel);
+
+        Entity ground = new Entity("ground", groundModel.getId(), terrain.generateMesh());
+        ground.setPosition(0, 0, 0);
+        addEntity(ground);
     }
 }
