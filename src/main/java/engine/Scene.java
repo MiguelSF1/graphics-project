@@ -17,6 +17,8 @@ public class Scene {
     private Skybox skybox;
 
     private Terrain terrain;
+    private Entity terrainEntity;
+    private Mesh terrainMesh;
 
     private Camera playerCamera;
     private Camera leftCamera;
@@ -121,7 +123,7 @@ public class Scene {
         addModel(playerModel);
 
         player = new Player("player", playerModel.getId(), playerMesh, terrain);
-        player.setPosition(50, 1.5f, 100);
+        player.setPosition(50, 0, 100);
         addEntity(player);
     }
 
@@ -138,30 +140,39 @@ public class Scene {
                     collided = true;
                     break;
                 }
+
+                Vector3f p = player.getPosition();
+                if (p.x < 0 || p.x > terrain.getSize() || p.z < 0 || p.z > terrain.getSize()) {
+                    collided = true;
+                }
             }
             if (collided) break;
         }
 
         if (collided) {
-            //player.setPosition(oldPos.x, oldPos.y, oldPos.z);
+            player.setPosition(oldPos.x, oldPos.y, oldPos.z);
         }
     }
 
     private void generateTerrain() {
         terrain = new Terrain();
+        terrainMesh = terrain.generateMesh();
 
         Texture texture = getTextureCache().createTexture("resources/models/grass/grass.png");
-        Material material = new Material();
-        material.setTexturePath(texture.getTexturePath());
-        List<Material> materialList = new ArrayList<>();
-        materialList.add(material);
 
-        material.getMeshList().add(terrain.generateMesh());
-        Model groundModel = new Model("ground-model", materialList);
-        addModel(groundModel);
+        terrainEntity = new Entity("ground", "ground-model", terrainMesh);
+        terrainEntity.setPosition(0, 0, 0);
+    }
 
-        Entity ground = new Entity("ground", groundModel.getId(), terrain.generateMesh());
-        ground.setPosition(0, 0, 0);
-        addEntity(ground);
+    public Terrain getTerrain() {
+        return terrain;
+    }
+
+    public Entity getTerrainEntity() {
+        return terrainEntity;
+    }
+
+    public Mesh getTerrainMesh() {
+        return terrainMesh;
     }
 }

@@ -68,6 +68,13 @@ public class SceneRender {
             }
         }
 
+        Texture texture = scene.getTextureCache().getTexture("resources/models/grass/grass.png");
+        glActiveTexture(GL_TEXTURE0);
+        texture.bind();
+        glBindVertexArray(scene.getTerrainMesh().getVaoId());
+        uniformsMap.setUniform("modelMatrix", scene.getTerrainEntity().getModelMatrix());
+        glDrawElements(GL_TRIANGLES, scene.getTerrainMesh().getNumVertices(), GL_UNSIGNED_INT, 0);
+
         glBindVertexArray(0);
         shaderProgram.unbind();
 

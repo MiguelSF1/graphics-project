@@ -35,10 +35,10 @@ public class Main implements EngineLogic {
         scene.addModel(tableModel);
 
         tableEntity = new Entity("table-entity", "table-model", tableMesh);
-        tableEntity.setPosition(0, 0, -10);
+
+        float tableHeight = scene.getTerrain().getTerrainHeight(40, 90) + 2.5f;
+        tableEntity.setPosition(40, tableHeight, 90);
         scene.addEntity(tableEntity);
-
-
     }
 
     @Override

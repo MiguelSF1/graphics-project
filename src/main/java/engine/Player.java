@@ -5,7 +5,6 @@ import org.joml.Vector3f;
 import java.lang.Math;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
 
 public class Player extends Entity {
     private static final float MOVEMENT_SPEED = 0.005f;
