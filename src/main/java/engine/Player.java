@@ -67,9 +67,6 @@ public class Player extends Entity {
             return;
         }
 
-
-        //incrementPosition(dx + strafeMove, dy ,dz);
-
         incrementPosition(dx + strafeMove, 0, 0);
         scene.checkPlayerCollisions(oldPos, 'X');
 
@@ -87,8 +84,6 @@ public class Player extends Entity {
             curUpSpeed = 0;
             isInAir = false;
         }
-
-        //scene.checkPlayerCollisions(oldPos);
     }
 
     public void setCurUpSpeed(float curUpSpeed) {

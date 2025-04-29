@@ -159,8 +159,6 @@ public class Scene {
                     player.setIsInAir(false);
                     break;
             }
-
-            //player.setPosition(oldPos.x, oldPos.y, oldPos.z);
         }
     }
 
@@ -185,6 +183,4 @@ public class Scene {
     public Mesh getTerrainMesh() {
         return terrainMesh;
     }
-
-
 }
