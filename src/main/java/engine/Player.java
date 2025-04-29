@@ -78,9 +78,9 @@ public class Player extends Entity {
 
         curUpSpeed += GRAVITY * dt;
 
-        float playerHeight = terrain.getTerrainHeight(getPosition().x, getPosition().z) + (getMesh().getAabbMax().y - getMesh().getAabbMin().y) * 0.5f;
-        if (getPosition().y < playerHeight + 0.4f) {
-            setPosition(getPosition().x, playerHeight + 0.4f, getPosition().z);
+        float minPlayerHeight = terrain.getTerrainHeight(getPosition().x, getPosition().z) + (getMesh().getAabbMax().y - getMesh().getAabbMin().y) * 0.5f;
+        if (getPosition().y < minPlayerHeight + 0.4) {
+            setPosition(getPosition().x, minPlayerHeight + 0.4f, getPosition().z);
             curUpSpeed = 0;
             isInAir = false;
         }
