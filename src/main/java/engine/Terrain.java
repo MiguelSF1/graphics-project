@@ -11,9 +11,10 @@ import java.io.IOException;
 
 public class Terrain {
     private static final float SIZE = 800;
-    private static final float MAX_HEIGHT = 50;
+    private static final float MAX_HEIGHT = 60;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 
+    BufferedImage image;
     private float[][] heights;
 
     public Terrain() {
@@ -21,7 +22,6 @@ public class Terrain {
     }
 
     public Mesh generateMesh() {
-        BufferedImage image = null;
         try {
             image = ImageIO.read(new File("resources/models/terrain/heightmap.png"));
         } catch (IOException e) {
@@ -45,12 +45,12 @@ public class Terrain {
                 heights[j][i] = height;
                 vertices[vertexPointer*3+1] = height;
                 vertices[vertexPointer*3+2] = (float)i/((float)VERTEX_COUNT - 1) * SIZE;
-                Vector3f normal = calcNormal(j, i, image);
+                Vector3f normal = calcNormal(j, i);
                 normals[vertexPointer*3] = normal.x;
                 normals[vertexPointer*3+1] = normal.y;
                 normals[vertexPointer*3+2] = normal.z;
-                textureCoords[vertexPointer*2] = ((float)j/((float)VERTEX_COUNT - 1)) * 200.0f;
-                textureCoords[vertexPointer*2+1] = ((float)i/((float)VERTEX_COUNT - 1)) * 200.0f;
+                textureCoords[vertexPointer*2] = ((float)j/((float)VERTEX_COUNT - 1)) * 80.0f;
+                textureCoords[vertexPointer*2+1] = ((float)i/((float)VERTEX_COUNT - 1)) * 80.0f;
                 vertexPointer++;
             }
         }
@@ -86,7 +86,7 @@ public class Terrain {
         return height;
     }
 
-    private Vector3f calcNormal(int x, int z, BufferedImage image) {
+    public Vector3f calcNormal(int x, int z) {
         float heightL = getHeight(x - 1, z, image);
         float heightR = getHeight(x + 1, z, image);
         float heightD = getHeight(x, z - 1, image);
@@ -98,7 +98,7 @@ public class Terrain {
     }
 
     public float getTerrainHeight(float x, float z) {
-        float gridSquareSize = SIZE / ((float)heights.length - 1);
+        float gridSquareSize = SIZE / (float)(heights.length - 1);
         int gridX = (int)Math.floor(x / gridSquareSize);
         int gridZ = (int)Math.floor(z / gridSquareSize);
         if (gridX >= heights.length - 1 || gridZ >= heights.length - 1 || gridX < 0 || gridZ < 0) {

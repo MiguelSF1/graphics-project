@@ -123,14 +123,19 @@ public class Scene {
         addModel(playerModel);
 
         player = new Player("player", playerModel.getId(), playerMesh, terrain);
-        player.setPosition(50, 0, 100);
+        float playerHeight = terrain.getTerrainHeight(50, 100) + (playerMesh.getAabbMax().y - playerMesh.getAabbMin().y) * 0.5f;
+        player.setPosition(50, playerHeight + 0.4f, 100);
         addEntity(player);
     }
 
-    public void checkPlayerMove(Vector3f oldPos) {
+    public void checkPlayerCollisions(Vector3f oldPos, char axis) {
         AABB playerBox = player.getAABB();
-
         boolean collided = false;
+
+        if (playerBox.min.x < 0 || playerBox.max.x > terrain.getSize() || playerBox.min.z < 0 || playerBox.max.z > terrain.getSize()) {
+            collided = true;
+        }
+
         for (Model model : modelMap.values()) {
             for (Entity e : model.getEntitiesList()) {
                 if (e == player) continue;
@@ -140,17 +145,22 @@ public class Scene {
                     collided = true;
                     break;
                 }
-
-                Vector3f p = player.getPosition();
-                if (p.x < 0 || p.x > terrain.getSize() || p.z < 0 || p.z > terrain.getSize()) {
-                    collided = true;
-                }
             }
             if (collided) break;
         }
 
         if (collided) {
-            player.setPosition(oldPos.x, oldPos.y, oldPos.z);
+            switch (axis) {
+                case 'X': player.setPosition(oldPos.x, player.getPosition().y, player.getPosition().z); break;
+                case 'Z': player.setPosition(player.getPosition().x, player.getPosition().y, oldPos.z); break;
+                case 'Y':
+                    player.setPosition(player.getPosition().x, oldPos.y, player.getPosition().z);
+                    player.setCurUpSpeed(0);
+                    player.setIsInAir(false);
+                    break;
+            }
+
+            //player.setPosition(oldPos.x, oldPos.y, oldPos.z);
         }
     }
 
@@ -175,4 +185,6 @@ public class Scene {
     public Mesh getTerrainMesh() {
         return terrainMesh;
     }
+
+
 }

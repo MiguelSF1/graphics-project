@@ -63,17 +63,39 @@ public class Player extends Entity {
         float dz = (float) (horizontalMove * Math.cos(Math.toRadians(getRotation().y))); // lado adjacente
         float dy = curUpSpeed * dt;
 
-        incrementPosition(dx + strafeMove, dy ,dz);
+        if (dx == 0 && strafeMove == 0 && dy == 0 && dz == 0) {
+            return;
+        }
+
+
+        //incrementPosition(dx + strafeMove, dy ,dz);
+
+        incrementPosition(dx + strafeMove, 0, 0);
+        scene.checkPlayerCollisions(oldPos, 'X');
+
+        incrementPosition(0, dy , 0);
+        scene.checkPlayerCollisions(oldPos, 'Y');
+
+        incrementPosition(0, 0, dz);
+        scene.checkPlayerCollisions(oldPos, 'Z');
 
         curUpSpeed += GRAVITY * dt;
 
-        float terrainHeight = terrain.getTerrainHeight(getPosition().x, getPosition().z);
-        if (getPosition().y < terrainHeight + 2.5f) {
-            setPosition(getPosition().x, terrainHeight + 2.5f, getPosition().z);
+        float playerHeight = terrain.getTerrainHeight(getPosition().x, getPosition().z) + (getMesh().getAabbMax().y - getMesh().getAabbMin().y) * 0.5f;
+        if (getPosition().y < playerHeight + 0.4f) {
+            setPosition(getPosition().x, playerHeight + 0.4f, getPosition().z);
             curUpSpeed = 0;
             isInAir = false;
         }
 
-        scene.checkPlayerMove(oldPos);
+        //scene.checkPlayerCollisions(oldPos);
+    }
+
+    public void setCurUpSpeed(float curUpSpeed) {
+        this.curUpSpeed = curUpSpeed;
+    }
+
+    public void setIsInAir(boolean isInAir) {
+        this.isInAir = isInAir;
     }
 }

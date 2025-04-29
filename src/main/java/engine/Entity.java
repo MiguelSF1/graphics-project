@@ -55,6 +55,10 @@ public class Entity {
         return scale;
     }
 
+    public Mesh getMesh() {
+        return mesh;
+    }
+
     public final void setPosition(float x, float y, float z) {
         position.x = x;
         position.y = y;

@@ -36,8 +36,13 @@ public class Main implements EngineLogic {
 
         tableEntity = new Entity("table-entity", "table-model", tableMesh);
 
-        float tableHeight = scene.getTerrain().getTerrainHeight(40, 90) + 2.5f;
-        tableEntity.setPosition(40, tableHeight, 90);
+
+        float yMax = tableEntity.getMesh().getAabbMax().y;
+        float yMin = tableEntity.getMesh().getAabbMin().y;
+
+        float tableHeight = scene.getTerrain().getTerrainHeight(40, 15) + (yMax - yMin) * 0.5f;
+
+        tableEntity.setPosition(40, tableHeight, 15);
         scene.addEntity(tableEntity);
     }
 
