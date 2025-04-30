@@ -49,25 +49,7 @@ public class Main implements EngineLogic {
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis) {
         scene.getPlayer().input(diffTimeMillis, window, scene);
-
-        if (window.isKeyPressed(GLFW_KEY_Z)) {
-            scene.selectCamera(0);
-        } else if (window.isKeyPressed(GLFW_KEY_X)) {
-            scene.selectCamera(1);
-        } else if (window.isKeyPressed(GLFW_KEY_C)) {
-            scene.selectCamera(2);
-        } else if (window.isKeyPressed(GLFW_KEY_V)) {
-            scene.selectCamera(3);
-        }
-
-        if (scene.getCurCameraIdx() == 0) {
-            scene.getCamera().move(diffTimeMillis, window);
-        } else if (scene.getCurCameraIdx() == 3) {
-            scene.getCamera().move1stPerson(diffTimeMillis, window);
-        } else {
-            scene.getCamera().setLookDir((float) window.getMouseX(), (float) window.getMouseY());
-        }
-
+        scene.getCamera().move(diffTimeMillis, window);
     }
 
     @Override

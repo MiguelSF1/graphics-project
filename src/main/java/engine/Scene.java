@@ -21,11 +21,6 @@ public class Scene {
     private Mesh terrainMesh;
 
     private Camera playerCamera;
-    private Camera leftCamera;
-    private Camera rightCamera;
-    private Camera camera1stPerson;
-
-    private int curCameraIdx;
 
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
@@ -38,17 +33,6 @@ public class Scene {
 
         addPlayer();
         playerCamera = new Camera(player);
-
-        leftCamera = new Camera(player);
-        leftCamera.setPosition(-10, 0, 0);
-
-        rightCamera = new Camera(player);
-        rightCamera.setPosition(10, 0, 0);
-
-        camera1stPerson = new Camera(player);
-
-        curCameraIdx = 0;
-
     }
 
     public void addEntity(Entity entity) {
@@ -69,15 +53,7 @@ public class Scene {
     }
 
     public Camera getCamera() {
-        if (curCameraIdx == 0) {
-            return playerCamera;
-        } else if (curCameraIdx == 1) {
-            return leftCamera;
-        } else if (curCameraIdx == 2) {
-            return rightCamera;
-        }
-
-        return camera1stPerson;
+        return playerCamera;
     }
 
     public Player getPlayer() {
@@ -86,14 +62,6 @@ public class Scene {
 
     public Skybox getSkybox() {
         return skybox;
-    }
-
-    public int getCurCameraIdx() {
-        return curCameraIdx;
-    }
-
-    public void selectCamera(int idx) {
-        curCameraIdx = idx;
     }
 
     public void resize(int width, int height) {
@@ -166,7 +134,7 @@ public class Scene {
         terrain = new Terrain();
         terrainMesh = terrain.generateMesh();
 
-        Texture texture = getTextureCache().createTexture("resources/models/grass/grass.png");
+        getTextureCache().createTexture("resources/models/grass/grass.png");
 
         terrainEntity = new Entity("ground", "ground-model", terrainMesh);
         terrainEntity.setPosition(0, 0, 0);

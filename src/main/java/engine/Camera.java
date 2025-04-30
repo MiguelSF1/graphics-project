@@ -5,66 +5,53 @@ import org.joml.*;
 import java.lang.Math;
 
 public class Camera {
-
     private Vector3f position;
-    private Vector3f orientation; // like upside down or something else
-    private float yaw = 0;        // angle to rotate horizontally
-    private float pitch = 0;      // angle to rotate vertically
+    private float yaw = 0f;                 // horizontal angle
+    private float pitch = 25f;              // vertical angle
 
-    private Player player;
+    private final Player player;
 
-    private float distanceFromPlayer = 5;
+    private float prevMouseX = 0f;
+    private float prevMouseY = 0f;
 
     public Camera(Player player) {
-        position = new Vector3f(0, 0, 0);
-        orientation = new Vector3f(0, 1, 0);
         this.player = player;
-    }
-
-    public Vector3f getPosition() {
-        return position;
-    }
-
-    public Matrix4f getViewMatrix() {
-        Vector3f lookPoint = new Vector3f(0, 0, -1); // is direction, need to make it relative to where camera is
-
-        lookPoint.rotateY((float) Math.toRadians(yaw), lookPoint);
-        lookPoint.rotateX((float) Math.toRadians(pitch), lookPoint);
-
-        lookPoint.add(position);
-
-        Matrix4f viewMatrix = new Matrix4f();
-        viewMatrix.lookAt(position, lookPoint, orientation, viewMatrix);
-        return viewMatrix;
+        this.position = new Vector3f();
     }
 
     public void move(float dt, Window window) {
-        setLookDir((float) window.getMouseX(), (float) window.getMouseY());
+        float mouseX = (float) window.getMouseX();
+        float mouseY = (float) window.getMouseY();
+        float dx = mouseX - prevMouseX;
+        float dy = mouseY - prevMouseY;
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
 
-        float horizDist = (float) (distanceFromPlayer * Math.cos(Math.toRadians(20))); // 20 degrees angle to look at player (yaw)
-        float vertiDist = (float) (distanceFromPlayer * Math.sin(Math.toRadians(20))); // right angle triangle
-        position.x = player.getPosition().x;
-        position.y = player.getPosition().y + vertiDist;
-        position.z = player.getPosition().z + horizDist;
+        float mouseSens = 0.1f;
+        yaw   += dx * mouseSens;
+        pitch -= dy * mouseSens;
+        pitch = Math.max(10, Math.min(80, pitch));
+
+        // right-angle triangle
+        float distanceFromPlayer = 10f;
+        float horizontalDist = (float) (distanceFromPlayer * Math.cos(Math.toRadians(pitch)));
+        float verticalDist   = (float) (distanceFromPlayer * Math.sin(Math.toRadians(pitch)));
+
+        // where the camera should be on the XZ-plane calculated from the yaw
+        float offsetX = (float) (horizontalDist * Math.sin(Math.toRadians(yaw)));
+        float offsetZ = (float) (horizontalDist * Math.cos(Math.toRadians(yaw)));
+
+        Vector3f playerPos = player.getPosition();
+        position.x = playerPos.x - offsetX;
+        position.y = playerPos.y + verticalDist;
+        position.z = playerPos.z + offsetZ;
     }
 
-    public void move1stPerson(float dt, Window window) {
-        setLookDir((float) window.getMouseX(), (float) window.getMouseY());
-
-        position.x = player.getPosition().x;
-        position.y = player.getPosition().y;
-        position.z = player.getPosition().z - 3.0f;
-    }
-
-    // changing angles (needed to rotate camera)
-    public void setLookDir(float mouseX, float mouseY) {
-        yaw = mouseX * -0.1f;
-        pitch = mouseY * -0.1f;
-    }
-
-    public void setPosition(float x, float y, float z) {
-        position.x = x;
-        position.y = y;
-        position.z = z;
+    public Matrix4f getViewMatrix() {
+        Vector3f up = new Vector3f(0, 1, 0);
+        Matrix4f view = new Matrix4f();
+        view.lookAt(position, player.getPosition(), up); // position target up
+        return view;
     }
 }
+
