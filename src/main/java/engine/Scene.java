@@ -22,6 +22,11 @@ public class Scene {
 
     private Camera playerCamera;
 
+    private AmbientLight ambientLight;
+    private DirLight dirLight;
+    private List<PointLight> pointLights;
+    private List<SpotLight> spotLights;
+
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
         projection = new Projection(width, height);
@@ -33,6 +38,19 @@ public class Scene {
 
         addPlayer();
         playerCamera = new Camera(player);
+
+        ambientLight = new AmbientLight();
+        pointLights = new ArrayList<>();
+        spotLights = new ArrayList<>();
+        dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 1), 0.8f);
+
+        PointLight pointLight = new PointLight(new Vector3f(0, 0, 1), new Vector3f(50, 10, 100), 1.0f);
+
+        pointLights.add(pointLight);
+
+        SpotLight spotLight = new SpotLight(pointLight, new Vector3f(0, 0, 1), 1.0f);
+
+        spotLights.add(spotLight);
     }
 
     public void addEntity(Entity entity) {
@@ -62,6 +80,26 @@ public class Scene {
 
     public Skybox getSkybox() {
         return skybox;
+    }
+
+    public AmbientLight getAmbientLight() {
+        return ambientLight;
+    }
+
+    public DirLight getDirLight() {
+        return dirLight;
+    }
+
+    public List<PointLight> getPointLights() {
+        return pointLights;
+    }
+
+    public List<SpotLight> getSpotLights() {
+        return spotLights;
+    }
+
+    public void setSpotLights(List<SpotLight> spotLights) {
+        this.spotLights = spotLights;
     }
 
     public void resize(int width, int height) {
