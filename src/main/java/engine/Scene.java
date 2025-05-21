@@ -28,6 +28,11 @@ public class Scene {
 
     private ParticleSystem particleSystem;
 
+    private BezierCurve bezierCurve;
+    private Entity movingEntity;
+    private float curveTime = 0f;
+
+
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
         projection = new Projection(width, height);
@@ -44,6 +49,8 @@ public class Scene {
         createLights();
 
         particleSystem = new ParticleSystem(0.1f, 0.01f, 2000);
+
+        generateBezierCurve();
     }
 
     public void addEntity(Entity entity) {
@@ -93,6 +100,22 @@ public class Scene {
 
     public ParticleSystem getParticleSystem() {
         return particleSystem;
+    }
+
+    public float getCurveTime() {
+        return curveTime;
+    }
+
+    public Entity getMovingEntity() {
+        return movingEntity;
+    }
+
+    public BezierCurve getBezierCurve() {
+        return bezierCurve;
+    }
+
+    public void setCurveTime(float curveTime) {
+        this.curveTime = curveTime;
     }
 
     public void resize(int width, int height) {
@@ -191,5 +214,22 @@ public class Scene {
         PointLight pointLight = new PointLight(new Vector3f(0, 0, 1), new Vector3f(50, 10, 100), 1.0f);
         pointLights.add(pointLight);
 
+    }
+
+    private void generateBezierCurve() {
+        bezierCurve = new BezierCurve(50);
+        bezierCurve.addControlPoint(new Vector3f(0, 0, 0));
+        bezierCurve.addControlPoint(new Vector3f(3, 5, 0));
+        bezierCurve.addControlPoint(new Vector3f(6, 5, 0));
+        bezierCurve.addControlPoint(new Vector3f(9, 0, 0));
+
+        Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
+        Material material = new Material();
+        material.getMeshList().add(mesh);
+        Model model = new Model("moving-model", List.of(material));
+        addModel(model);
+
+        movingEntity = new Entity("mover", "moving-model", mesh);
+        addEntity(movingEntity);
     }
 }

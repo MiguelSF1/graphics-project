@@ -71,5 +71,11 @@ public class Main implements EngineLogic {
     public void update(Window window, Scene scene, long diffTimeMillis) {
         scene.getParticleSystem().generateParticles(new Vector3f(40, 10, 15), diffTimeMillis);
         scene.getParticleSystem().checkParticleLifespan(diffTimeMillis);
+
+        scene.setCurveTime(scene.getCurveTime() + diffTimeMillis/1000f);
+
+        Vector3f pos = scene.getBezierCurve().evaluateAtTime(scene.getCurveTime());
+        scene.getMovingEntity().setPosition(pos.x, pos.y, pos.z);
+
     }
 }
