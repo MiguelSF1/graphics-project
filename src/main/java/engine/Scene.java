@@ -43,7 +43,7 @@ public class Scene {
 
         createLights();
 
-        particleSystem = new ParticleSystem(0.1f, 0.01f, 4000);
+        particleSystem = new ParticleSystem(0.1f, 0.01f, 2000);
     }
 
     public void addEntity(Entity entity) {

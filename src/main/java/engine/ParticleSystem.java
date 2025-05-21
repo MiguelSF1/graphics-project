@@ -37,7 +37,7 @@ public class ParticleSystem {
         Vector3f velocity = new Vector3f(dirX, 1, dirZ);
         velocity.normalize();
         velocity.mul(speed);
-        this.aliveParticles.add(new Particle(new Vector3f(center), velocity, life, 0, 1, 1));
+        this.aliveParticles.add(new Particle(new Vector3f(center), velocity, life, 0, 1));
     }
 
     public void checkParticleLifespan(float dt) {

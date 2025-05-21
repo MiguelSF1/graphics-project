@@ -79,6 +79,7 @@ public class SceneRender {
         particleUniformsMap.createUniform("projectionMatrix");
         particleUniformsMap.createUniform("modelViewMatrix");
         particleUniformsMap.createUniform("particleText");
+        particleUniformsMap.createUniform("elapsedTime");
     }
 
     public void render(Scene scene) {
@@ -139,6 +140,8 @@ public class SceneRender {
         particleUniformsMap.setUniform("particleText", 0);
         particleUniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
         for (Particle particle : scene.getParticles()) {
+            particleUniformsMap.setUniform("elapsedTime", particle.getElapsedTime());
+            System.out.println(particle.getElapsedTime());
             Matrix4f viewMatrix = new Matrix4f(scene.getCamera().getViewMatrix());
             Matrix4f modelMatrix = new Matrix4f();
             modelMatrix.translate(particle.getPosition());

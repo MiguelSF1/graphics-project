@@ -1,6 +1,5 @@
 package engine;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -22,10 +21,6 @@ public class Particle {
     private static final float[] VERTICES = { -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f };
     private int vaoId;
     private int textureId;
-    private int numberOfRows;
-    private Vector2f textOffset1 = new Vector2f();
-    private Vector2f textOffset2 = new Vector2f();
-    private float blendF;
 
     private Vector3f position;
     private Vector3f velocity;
@@ -36,13 +31,12 @@ public class Particle {
 
     private float elapsedTime = 0;
 
-    public Particle(Vector3f position, Vector3f velocity, float duration, float rotation, float scale, int numberOfRows) {
+    public Particle(Vector3f position, Vector3f velocity, float duration, float rotation, float scale) {
         this.position = position;
         this.velocity = velocity;
         this.duration = duration;
         this.rotation = rotation;
         this.scale = scale;
-        this.numberOfRows = numberOfRows;
         buildParticle();
         buildParticleTexture();
     }
@@ -59,8 +53,8 @@ public class Particle {
         return scale;
     }
 
-    public int getNumberOfRows() {
-        return numberOfRows;
+    public float getElapsedTime() {
+        return elapsedTime;
     }
 
     public int getTextureId() {
@@ -72,7 +66,6 @@ public class Particle {
         Vector3f movement = new Vector3f(velocity);
         movement.mul(dt);
         position.add(movement);
-        updateTextCoords();
         elapsedTime += dt;
         return elapsedTime <= duration;
     }
@@ -140,23 +133,5 @@ public class Particle {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
         MemoryUtil.memFree(positionsBuffer);
-    }
-
-    private void updateTextCoords() {
-        float life = elapsedTime / duration;
-        int stageCount = numberOfRows * numberOfRows;
-        float atlasProgress = life * stageCount;
-        int index1 = (int) Math.floor(atlasProgress);
-        int index2 = index1 < stageCount - 1 ? index1 + 1 : index1;
-        blendF = atlasProgress % 1;
-        setTextOffset(textOffset1, index1);
-        setTextOffset(textOffset2, index2);
-    }
-
-    private void setTextOffset(Vector2f offset, int index) {
-        int column = index % numberOfRows;
-        int row = index / numberOfRows;
-        offset.x = (float) column / numberOfRows;
-        offset.y = (float) row / numberOfRows;
     }
 }
