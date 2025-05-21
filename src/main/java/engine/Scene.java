@@ -25,7 +25,8 @@ public class Scene {
     private AmbientLight ambientLight;
     private DirLight dirLight;
     private List<PointLight> pointLights;
-    private List<SpotLight> spotLights;
+
+    private ParticleSystem particleSystem;
 
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
@@ -37,20 +38,12 @@ public class Scene {
         generateTerrain();
 
         addPlayer();
+
         playerCamera = new Camera(player);
 
-        ambientLight = new AmbientLight();
-        pointLights = new ArrayList<>();
-        spotLights = new ArrayList<>();
-        dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 1), 0.8f);
+        createLights();
 
-        PointLight pointLight = new PointLight(new Vector3f(0, 0, 1), new Vector3f(50, 10, 100), 1.0f);
-
-        pointLights.add(pointLight);
-
-        SpotLight spotLight = new SpotLight(pointLight, new Vector3f(0, 0, 1), 1.0f);
-
-        spotLights.add(spotLight);
+        particleSystem = new ParticleSystem(0.1f, 0.01f, 4000);
     }
 
     public void addEntity(Entity entity) {
@@ -94,12 +87,12 @@ public class Scene {
         return pointLights;
     }
 
-    public List<SpotLight> getSpotLights() {
-        return spotLights;
+    public List<Particle> getParticles() {
+        return particleSystem.getAliveParticles();
     }
 
-    public void setSpotLights(List<SpotLight> spotLights) {
-        this.spotLights = spotLights;
+    public ParticleSystem getParticleSystem() {
+        return particleSystem;
     }
 
     public void resize(int width, int height) {
@@ -188,5 +181,15 @@ public class Scene {
 
     public Mesh getTerrainMesh() {
         return terrainMesh;
+    }
+
+    private void createLights() {
+        ambientLight = new AmbientLight();
+        dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 1), 0.8f);
+        pointLights = new ArrayList<>();
+
+        PointLight pointLight = new PointLight(new Vector3f(0, 0, 1), new Vector3f(50, 10, 100), 1.0f);
+        pointLights.add(pointLight);
+
     }
 }

@@ -2,8 +2,10 @@ package game;
 
 import engine.*;
 import engine.Scene;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -36,7 +38,6 @@ public class Main implements EngineLogic {
 
         tableEntity = new Entity("table-entity", "table-model", tableMesh);
 
-
         float yMax = tableEntity.getMesh().getAabbMax().y;
         float yMin = tableEntity.getMesh().getAabbMin().y;
 
@@ -44,6 +45,20 @@ public class Main implements EngineLogic {
 
         tableEntity.setPosition(40, tableHeight, 15);
         scene.addEntity(tableEntity);
+
+        Material starMaterial = new Material();
+        scene.getTextureCache().createTexture("resources/models/star/star.png");
+        starMaterial.setTexturePath("resources/models/star/star.png");
+        List<Material> starMaterialList = new ArrayList<>();
+        starMaterialList.add(starMaterial);
+        Mesh starMesh = OBJLoader.loadMeshFromOBJ("resources/models/star/star.obj");
+        starMaterial.getMeshList().add(starMesh);
+        Model starModel = new Model("star-model", starMaterialList);
+        scene.addModel(starModel);
+        Entity starEntity = new Entity("star-entity", "star-model", starMesh);
+        starEntity.setPosition(50, 2, 90);
+        starEntity.setRotation(90, 0, 0);
+        scene.addEntity(starEntity);
     }
 
     @Override
@@ -54,6 +69,7 @@ public class Main implements EngineLogic {
 
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
-
+        scene.getParticleSystem().generateParticles(new Vector3f(40, 10, 15), diffTimeMillis);
+        scene.getParticleSystem().checkParticleLifespan(diffTimeMillis);
     }
 }

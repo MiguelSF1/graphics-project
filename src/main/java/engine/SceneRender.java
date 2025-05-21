@@ -3,6 +3,7 @@ package engine;
 
 import org.joml.*;
 
+import java.lang.Math;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,19 +12,25 @@ import static org.lwjgl.opengl.GL30.*;
 public class SceneRender {
 
     private static final int MAX_POINT_LIGHTS = 5;
-    private static final int MAX_SPOT_LIGHTS = 5;
 
     private ShaderProgram shaderProgram;
     private ShaderProgram skyboxShaderProgram;
+    private ShaderProgram particleShaderProgram;
 
     private UniformsMap uniformsMap;
     private UniformsMap skyboxUniformsMap;
+    private UniformsMap particleUniformsMap;
 
     public SceneRender() {
         shaderProgram = new ShaderProgram("resources/shaders/scene.vert", "resources/shaders/scene.frag");
         createUniforms();
+
         skyboxShaderProgram = new ShaderProgram("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
         createSkyboxUniforms();
+
+        particleShaderProgram = new ShaderProgram("resources/shaders/particle.vert", "resources/shaders/particle.frag");
+        createParticleUniforms();
+
     }
 
     public void cleanup() {
@@ -45,6 +52,10 @@ public class SceneRender {
         uniformsMap.createUniform("ambientLight.factor");
         uniformsMap.createUniform("ambientLight.color");
 
+        uniformsMap.createUniform("dirLight.color");
+        uniformsMap.createUniform("dirLight.direction");
+        uniformsMap.createUniform("dirLight.intensity");
+
         for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
             String name = "pointLights[" + i + "]";
             uniformsMap.createUniform(name + ".position");
@@ -54,22 +65,6 @@ public class SceneRender {
             uniformsMap.createUniform(name + ".att.linear");
             uniformsMap.createUniform(name + ".att.exponent");
         }
-        for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
-            String name = "spotLights[" + i + "]";
-            uniformsMap.createUniform(name + ".pl.position");
-            uniformsMap.createUniform(name + ".pl.color");
-            uniformsMap.createUniform(name + ".pl.intensity");
-            uniformsMap.createUniform(name + ".pl.att.constant");
-            uniformsMap.createUniform(name + ".pl.att.linear");
-            uniformsMap.createUniform(name + ".pl.att.exponent");
-            uniformsMap.createUniform(name + ".conedir");
-            uniformsMap.createUniform(name + ".cutoff");
-        }
-
-        uniformsMap.createUniform("dirLight.color");
-        uniformsMap.createUniform("dirLight.direction");
-        uniformsMap.createUniform("dirLight.intensity");
-
     }
 
     private void createSkyboxUniforms() {
@@ -77,6 +72,13 @@ public class SceneRender {
         skyboxUniformsMap.createUniform("projectionMatrix");
         skyboxUniformsMap.createUniform("viewMatrix");
         skyboxUniformsMap.createUniform("cubeMap");
+    }
+
+    private void createParticleUniforms() {
+        particleUniformsMap = new UniformsMap(particleShaderProgram.getProgramId());
+        particleUniformsMap.createUniform("projectionMatrix");
+        particleUniformsMap.createUniform("modelViewMatrix");
+        particleUniformsMap.createUniform("particleText");
     }
 
     public void render(Scene scene) {
@@ -133,6 +135,31 @@ public class SceneRender {
         scene.getSkybox().unbind();
         skyboxShaderProgram.unbind();
 
+        particleShaderProgram.bind();
+        particleUniformsMap.setUniform("particleText", 0);
+        particleUniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
+        for (Particle particle : scene.getParticles()) {
+            Matrix4f viewMatrix = new Matrix4f(scene.getCamera().getViewMatrix());
+            Matrix4f modelMatrix = new Matrix4f();
+            modelMatrix.translate(particle.getPosition());
+            modelMatrix.m00(viewMatrix.m00());
+            modelMatrix.m01(viewMatrix.m10());
+            modelMatrix.m02(viewMatrix.m20());
+            modelMatrix.m10(viewMatrix.m01());
+            modelMatrix.m11(viewMatrix.m11());
+            modelMatrix.m12(viewMatrix.m21());
+            modelMatrix.m20(viewMatrix.m02());
+            modelMatrix.m21(viewMatrix.m12());
+            modelMatrix.m22(viewMatrix.m22());
+            modelMatrix.rotate((float) Math.toRadians(particle.getRotation()), new Vector3f(0, 0, 1), modelMatrix);
+            modelMatrix.scale(new Vector3f(particle.getScale(), particle.getScale(), particle.getScale()), modelMatrix);
+            Matrix4f modelViewMatrix = viewMatrix.mul(modelMatrix);
+            particleUniformsMap.setUniform("modelViewMatrix", modelViewMatrix);
+
+            particle.render();
+        }
+        particleShaderProgram.unbind();
+
     }
 
     private void updateLights(Scene scene) {
@@ -162,20 +189,6 @@ public class SceneRender {
             String name = "pointLights[" + i + "]";
             updatePointLight(pointLight, name, viewMatrix);
         }
-
-
-        List<SpotLight> spotLights = scene.getSpotLights();
-        int numSpotLights = spotLights.size();
-        SpotLight spotLight;
-        for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
-            if (i < numSpotLights) {
-                spotLight = spotLights.get(i);
-            } else {
-                spotLight = null;
-            }
-            String name = "spotLights[" + i + "]";
-            updateSpotLight(spotLight, name, viewMatrix);
-        }
     }
 
     private void updatePointLight(PointLight pointLight, String prefix, Matrix4f viewMatrix) {
@@ -203,20 +216,5 @@ public class SceneRender {
         uniformsMap.setUniform(prefix + ".att.constant", constant);
         uniformsMap.setUniform(prefix + ".att.linear", linear);
         uniformsMap.setUniform(prefix + ".att.exponent", exponent);
-    }
-
-    private void updateSpotLight(SpotLight spotLight, String prefix, Matrix4f viewMatrix) {
-        PointLight pointLight = null;
-        Vector3f coneDirection = new Vector3f();
-        float cutoff = 0.0f;
-        if (spotLight != null) {
-            coneDirection = spotLight.getConeDirection();
-            cutoff = spotLight.getCutOff();
-            pointLight = spotLight.getPointLight();
-        }
-
-        uniformsMap.setUniform(prefix + ".conedir", coneDirection);
-        uniformsMap.setUniform(prefix + ".cutoff", cutoff);
-        updatePointLight(pointLight, prefix + ".pl", viewMatrix);
     }
 }
