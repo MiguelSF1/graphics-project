@@ -72,7 +72,13 @@ public class Main implements EngineLogic {
         scene.getParticleSystem().generateParticles(new Vector3f(40, 10, 15), diffTimeMillis);
         scene.getParticleSystem().checkParticleLifespan(diffTimeMillis);
 
+
         scene.setCurveTime(scene.getCurveTime() + diffTimeMillis/1000f);
+
+        Vector3f dir = scene.getBezierCurve().evaluateTangentAtTime(scene.getCurveTime());
+        Vector3f forward = new Vector3f(dir).normalize();
+        float yaw = (float) Math.toDegrees(Math.atan2(-forward.x, -forward.z));
+        scene.getMovingEntity().setRotation(0, yaw, 0);
 
         Vector3f pos = scene.getBezierCurve().evaluateAtTime(scene.getCurveTime());
         scene.getMovingEntity().setPosition(pos.x, pos.y, pos.z);

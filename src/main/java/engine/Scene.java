@@ -218,10 +218,15 @@ public class Scene {
 
     private void generateBezierCurve() {
         bezierCurve = new BezierCurve(50);
-        bezierCurve.addControlPoint(new Vector3f(0, 0, 0));
-        bezierCurve.addControlPoint(new Vector3f(3, 5, 0));
-        bezierCurve.addControlPoint(new Vector3f(6, 5, 0));
-        bezierCurve.addControlPoint(new Vector3f(9, 0, 0));
+        bezierCurve.addControlPoint(new Vector3f(30, 5, 80));
+        bezierCurve.addControlPoint(new Vector3f(35, 10, 60));
+        bezierCurve.addControlPoint(new Vector3f(40, 5, 40));
+
+        bezierCurve.addControlPoint(new Vector3f(45, 10, 20));
+
+        bezierCurve.addControlPoint(new Vector3f(40, 5, 40));
+        bezierCurve.addControlPoint(new Vector3f(35, 10, 60));
+        bezierCurve.addControlPoint(new Vector3f(30, 5, 80));
 
         Mesh mesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
         Material material = new Material();
