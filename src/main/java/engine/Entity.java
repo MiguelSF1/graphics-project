@@ -13,6 +13,8 @@ public class Entity {
     private Vector3f rotation;
     private float scale;
 
+    private Entity parent;
+
     public Entity(String id, String modelId, Mesh mesh) {
         this.id = id;
         this.modelId = modelId;
@@ -43,6 +45,15 @@ public class Entity {
         return modelMatrix;
     }
 
+    public Matrix4f getWorldModelMatrix() {
+        Matrix4f modelMatrix = getModelMatrix();
+        if (parent != null) {
+            return new Matrix4f(parent.getWorldModelMatrix().mul(modelMatrix));
+        } else {
+            return modelMatrix;
+        }
+    }
+
     public Vector3f getPosition() {
         return position;
     }
@@ -57,6 +68,14 @@ public class Entity {
 
     public Mesh getMesh() {
         return mesh;
+    }
+
+    public Entity getParent() {
+        return parent;
+    }
+
+    public void setParent(Entity parent) {
+        this.parent = parent;
     }
 
     public final void setPosition(float x, float y, float z) {

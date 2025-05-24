@@ -109,7 +109,7 @@ public class SceneRender {
                 for (Mesh mesh : material.getMeshList()) {
                     glBindVertexArray(mesh.getVaoId());
                     for (Entity entity : entities) {
-                        uniformsMap.setUniform("modelMatrix", entity.getModelMatrix());
+                        uniformsMap.setUniform("modelMatrix", entity.getWorldModelMatrix());
                         glDrawElements(GL_TRIANGLES, mesh.getNumVertices(), GL_UNSIGNED_INT, 0);
                     }
                 }
