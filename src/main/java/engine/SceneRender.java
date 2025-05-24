@@ -22,7 +22,7 @@ public class SceneRender {
     private UniformsMap particleUniformsMap;
 
     public SceneRender() {
-        shaderProgram = new ShaderProgram("resources/shaders/scene.vert", "resources/shaders/scene.frag");
+        shaderProgram = new ShaderProgram("resources/shaders/scene_gouraud.vert", "resources/shaders/scene_gouraud.frag");
         createUniforms();
 
         skyboxShaderProgram = new ShaderProgram("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
