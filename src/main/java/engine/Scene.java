@@ -32,6 +32,9 @@ public class Scene {
     private Entity movingEntity;
     private float curveTime = 0f;
 
+    private Entity starEntity;
+    private int starCount;
+
 
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
@@ -51,6 +54,9 @@ public class Scene {
         particleSystem = new ParticleSystem(0.1f, 0.01f, 2000);
 
         generateBezierCurve();
+
+        generateStar();
+        starCount = 0;
     }
 
     public void addEntity(Entity entity) {
@@ -160,11 +166,16 @@ public class Scene {
 
         for (Model model : modelMap.values()) {
             for (Entity e : model.getEntitiesList()) {
-                if (e == player) continue;
+                if (e.getId().equals(player.getId())) continue;
 
                 AABB otherBox = e.getAABB();
                 if (AABB.intersects(playerBox, otherBox)) {
                     collided = true;
+                    if (e.getId().equals(starEntity.getId())) {
+                        starEntity.setPosition(40, 2, 110);
+                        starCount++;
+
+                    }
                     break;
                 }
             }
@@ -236,5 +247,21 @@ public class Scene {
 
         movingEntity = new Entity("mover", "moving-model", mesh);
         addEntity(movingEntity);
+    }
+
+    private void generateStar() {
+        Material starMaterial = new Material();
+        getTextureCache().createTexture("resources/models/star/star.png");
+        starMaterial.setTexturePath("resources/models/star/star.png");
+        List<Material> starMaterialList = new ArrayList<>();
+        starMaterialList.add(starMaterial);
+        Mesh starMesh = OBJLoader.loadMeshFromOBJ("resources/models/star/star.obj");
+        starMaterial.getMeshList().add(starMesh);
+        Model starModel = new Model("star-model", starMaterialList);
+        addModel(starModel);
+        starEntity = new Entity("star-entity", "star-model", starMesh);
+        starEntity.setPosition(50, 2, 90);
+        starEntity.setRotation(90, 0, 0);
+        addEntity(starEntity);
     }
 }

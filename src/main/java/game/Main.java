@@ -49,20 +49,6 @@ public class Main implements EngineLogic {
         tableEntity.setPosition(40, tableHeight, 15);
         scene.addEntity(tableEntity);
 
-        Material starMaterial = new Material();
-        scene.getTextureCache().createTexture("resources/models/star/star.png");
-        starMaterial.setTexturePath("resources/models/star/star.png");
-        List<Material> starMaterialList = new ArrayList<>();
-        starMaterialList.add(starMaterial);
-        Mesh starMesh = OBJLoader.loadMeshFromOBJ("resources/models/star/star.obj");
-        starMaterial.getMeshList().add(starMesh);
-        Model starModel = new Model("star-model", starMaterialList);
-        scene.addModel(starModel);
-        Entity starEntity = new Entity("star-entity", "star-model", starMesh);
-        starEntity.setPosition(50, 2, 90);
-        starEntity.setRotation(90, 0, 0);
-        scene.addEntity(starEntity);
-
         generateArm(scene);
     }
 
@@ -70,6 +56,10 @@ public class Main implements EngineLogic {
     public void input(Window window, Scene scene, long diffTimeMillis) {
         scene.getPlayer().input(diffTimeMillis, window, scene);
         scene.getCamera().move(diffTimeMillis, window);
+
+        if (window.isKeyPressed(GLFW_KEY_UP)) {
+            scene.getPointLights().get(0).setPosition(scene.getPointLights().get(0).getPosition().x + 0.1f, scene.getPointLights().get(0).getPosition().y, scene.getPointLights().get(0).getPosition().z);
+        }
     }
 
     @Override
