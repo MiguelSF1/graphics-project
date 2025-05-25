@@ -172,9 +172,13 @@ public class Scene {
                 if (AABB.intersects(playerBox, otherBox)) {
                     collided = true;
                     if (e.getId().equals(starEntity.getId())) {
-                        starEntity.setPosition(40, 2, 110);
+                        Random rand = new Random();
+                        float randomX = 20 + rand.nextFloat() * (60 - 20);
+                        float randomZ = 40 + rand.nextFloat() * (150 - 40);
+                        float fixedY = 3;
+                        starEntity.setPosition(randomX, fixedY, randomZ);
                         starCount++;
-
+                        playerCamera.startCelebration();
                     }
                     break;
                 }
