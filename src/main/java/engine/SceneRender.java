@@ -144,6 +144,7 @@ public class SceneRender {
             Matrix4f viewMatrix = new Matrix4f(scene.getCamera().getViewMatrix());
             Matrix4f modelMatrix = new Matrix4f();
             modelMatrix.translate(particle.getPosition());
+            // Canceling the camera rotation by transposing the rotation matrix (transform back to world space)
             modelMatrix.m00(viewMatrix.m00());
             modelMatrix.m01(viewMatrix.m10());
             modelMatrix.m02(viewMatrix.m20());
@@ -153,6 +154,7 @@ public class SceneRender {
             modelMatrix.m20(viewMatrix.m02());
             modelMatrix.m21(viewMatrix.m12());
             modelMatrix.m22(viewMatrix.m22());
+            // rotate 2d effect (around z-axis)
             modelMatrix.rotate((float) Math.toRadians(particle.getRotation()), new Vector3f(0, 0, 1), modelMatrix);
             modelMatrix.scale(new Vector3f(particle.getScale(), particle.getScale(), particle.getScale()), modelMatrix);
             Matrix4f modelViewMatrix = viewMatrix.mul(modelMatrix);
@@ -171,8 +173,9 @@ public class SceneRender {
         uniformsMap.setUniform("ambientLight.factor", ambientLight.getIntensity());
         uniformsMap.setUniform("ambientLight.color", ambientLight.getColor());
 
+        // transform into view space coords (makes light relative to camera)
         DirLight dirLight = scene.getDirLight();
-        Vector4f auxDir = new Vector4f(dirLight.getDirection(), 0);
+        Vector4f auxDir = new Vector4f(dirLight.getDirection(), 0); // w = 0 for direction (no translation)
         auxDir.mul(viewMatrix);
         Vector3f dir = new Vector3f(auxDir.x, auxDir.y, auxDir.z);
         uniformsMap.setUniform("dirLight.color", dirLight.getColor());
@@ -202,8 +205,8 @@ public class SceneRender {
         float linear = 0.0f;
         float exponent = 0.0f;
         if (pointLight != null) {
-            aux.set(pointLight.getPosition(), 1);
-            aux.mul(viewMatrix);
+            aux.set(pointLight.getPosition(), 1); // can translate
+            aux.mul(viewMatrix); // view space coords
             lightPosition.set(aux.x, aux.y, aux.z);
             color.set(pointLight.getColor());
             intensity = pointLight.getIntensity();

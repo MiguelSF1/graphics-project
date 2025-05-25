@@ -1,7 +1,7 @@
 #version 330
 
 const int MAX_POINT_LIGHTS = 5;
-const float SPECULAR_POWER = 15;
+const float SPECULAR_POWER = 15; // shininess dependent on viewing angles
 
 in vec3 outPosition;
 in vec3 outNormal;
@@ -49,14 +49,14 @@ uniform DirLight dirLight;
 
 vec4 calcLightColor(vec4 diffuse, vec4 specular, vec3 lightColor, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal) {
     // Diffuse Light
-    float diffuseFactor = max(dot(normal, to_light_dir), 0.0);
+    float diffuseFactor = max(dot(normal, to_light_dir), 0.0); // how directly light hits surface
     vec4 diffuseColor = diffuse * vec4(lightColor, 1.0) * light_intensity * diffuseFactor;
 
     // Specular Light
     vec3 camera_direction = normalize(-position);
     vec3 from_light_dir = -to_light_dir;
-    vec3 reflected_light = normalize(reflect(from_light_dir, normal));
-    float specularFactor = max(dot(camera_direction, reflected_light), 0.0);
+    vec3 reflected_light = normalize(reflect(from_light_dir, normal)); // reflection of light on normal
+    float specularFactor = max(dot(camera_direction, reflected_light), 0.0); // how close the view direction matches the light reflection direction
     specularFactor = pow(specularFactor, SPECULAR_POWER); // more intense if camera is pointing to light cone
     vec4 specColor = specular * light_intensity  * specularFactor * material.reflectance * vec4(lightColor, 1.0);
 

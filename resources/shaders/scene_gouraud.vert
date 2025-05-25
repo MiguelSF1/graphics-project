@@ -90,7 +90,7 @@ void main() {
     vec3 fragPos = mvPosition.xyz;
     vec3 norm = normalize((modelViewMatrix * vec4(normal, 0.0)).xyz);
 
-    vec4 text_color = vec4(1.0); // fallback color if texture not used
+    vec4 text_color = vec4(1.0);
     vec4 ambient = calcAmbient(ambientLight, text_color + material.ambient);
     vec4 diffuse = text_color + material.diffuse;
     vec4 specular = text_color + material.specular;

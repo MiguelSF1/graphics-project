@@ -232,7 +232,7 @@ public class Scene {
     }
 
     private void generateBezierCurve() {
-        bezierCurve = new BezierCurve(50);
+        bezierCurve = new BezierCurve();
         bezierCurve.addControlPoint(new Vector3f(30, 5, 80));
         bezierCurve.addControlPoint(new Vector3f(35, 10, 60));
         bezierCurve.addControlPoint(new Vector3f(40, 5, 40));
