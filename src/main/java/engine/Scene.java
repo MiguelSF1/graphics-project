@@ -226,7 +226,7 @@ public class Scene {
         dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 1), 0.8f);
         pointLights = new ArrayList<>();
 
-        PointLight pointLight = new PointLight(new Vector3f(0, 0, 1), new Vector3f(50, 0, 100), 1.0f);
+        PointLight pointLight = new PointLight(new Vector3f(0, 0, 1), new Vector3f(50, 0.2f, 100), 1.0f);
         pointLights.add(pointLight);
 
     }
