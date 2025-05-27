@@ -35,6 +35,9 @@ public class Scene {
     private Entity starEntity;
     private int starCount;
 
+    private Entity[] enemyEntities;
+    private int score;
+
 
     public Scene(int width, int height) {
         modelMap = new HashMap<>();
@@ -57,6 +60,9 @@ public class Scene {
 
         generateStar();
         starCount = 0;
+
+        generateEnemies();
+        score = 0;
     }
 
     public void addEntity(Entity entity) {
@@ -180,6 +186,24 @@ public class Scene {
                         starCount++;
                         playerCamera.startCelebration();
                     }
+
+                    if (e.getId().split(":")[0].equals("enemy-entity")) {
+                        if (axis == 'Y') {
+                            score++;
+                            Random rand = new Random();
+                            float enemyX = 10 + rand.nextFloat() * (790 - 10);
+                            float enemyZ = 10 + rand.nextFloat() * (790 - 10);
+                            float enemyY = terrain.getTerrainHeight(enemyX, enemyZ) + (e.getMesh().getAabbMax().y - e.getMesh().getAabbMin().y) * 0.5f;
+                            e.setPosition(enemyX, enemyY + 0.4f, enemyZ);
+                        } else {
+                            float playerHeight = terrain.getTerrainHeight(50, 100) + (player.getMesh().getAabbMax().y - player.getMesh().getAabbMin().y) * 0.5f;
+                            player.setPosition(50, playerHeight + 0.4f, 100);
+                            score = 0;
+                            starCount = 0;
+                            collided = false;
+                        }
+
+                    }
                     break;
                 }
             }
@@ -267,5 +291,30 @@ public class Scene {
         starEntity.setPosition(50, 2, 90);
         starEntity.setRotation(90, 0, 0);
         addEntity(starEntity);
+    }
+
+    private void generateEnemies() {
+        enemyEntities = new Entity[50];
+
+        Material enemyMaterial = new Material();
+        // getTextureCache().createTexture();
+        // enemyMaterial.setTexturePath();
+        List<Material> enemyMaterialList = new ArrayList<>();
+        enemyMaterialList.add(enemyMaterial);
+        Mesh enemyMesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
+        enemyMaterial.getMeshList().add(enemyMesh);
+        Model enemyModel = new Model("enemy-model", enemyMaterialList);
+        addModel(enemyModel);
+
+        Random rand = new Random();
+        for (int i = 0; i < enemyEntities.length; i++) {
+            enemyEntities[i] = new Entity("enemy-entity:" + i, "enemy-model", enemyMesh);
+            float enemyX = 10 + rand.nextFloat() * (790 - 10);
+            float enemyZ = 10 + rand.nextFloat() * (790 - 10);
+            float enemyY = terrain.getTerrainHeight(enemyX, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
+            enemyEntities[i].setPosition(enemyX, enemyY + 0.4f, enemyZ);
+            addEntity(enemyEntities[i]);
+
+        }
     }
 }

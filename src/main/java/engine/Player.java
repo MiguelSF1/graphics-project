@@ -7,7 +7,7 @@ import java.lang.Math;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Player extends Entity {
-    private static final float MOVEMENT_SPEED = 0.005f;
+    private static final float MOVEMENT_SPEED = 0.01f;
     private static final float TURN_SPEED = 0.040f;
     private static final float GRAVITY = -0.00005f;
     private static final float JUMP_POWER = 0.0175f;
@@ -84,6 +84,7 @@ public class Player extends Entity {
             curUpSpeed = 0;
             isInAir = false;
         }
+
     }
 
     public void setCurUpSpeed(float curUpSpeed) {
