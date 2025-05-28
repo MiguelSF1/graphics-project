@@ -17,6 +17,10 @@ public class BezierCurve {
         controlPoints.add(point);
     }
 
+    public void clearControlPoints() {
+        controlPoints.clear();
+    }
+
     public float getDuration() {
         return duration;
     }
