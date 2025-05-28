@@ -3,6 +3,7 @@ package engine;
 
 import org.joml.*;
 
+import java.awt.*;
 import java.lang.Math;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,12 @@ public class SceneRender {
     private UniformsMap skyboxUniformsMap;
     private UniformsMap particleUniformsMap;
 
+    Font font;
+    TextTexture scoreTexture;
+    TextTexture starsTexture;
+    TextTexture resultTexture;
+    TextRender textRenderer;
+
     public SceneRender() {
         shaderProgram = new ShaderProgram("resources/shaders/scene.vert", "resources/shaders/scene.frag");
         createUniforms();
@@ -30,6 +37,8 @@ public class SceneRender {
 
         particleShaderProgram = new ShaderProgram("resources/shaders/particle.vert", "resources/shaders/particle.frag");
         createParticleUniforms();
+
+        createHUD();
 
     }
 
@@ -164,6 +173,7 @@ public class SceneRender {
         }
         particleShaderProgram.unbind();
 
+        renderHUD(1024, 768, scene);
     }
 
     private void updateLights(Scene scene) {
@@ -221,5 +231,34 @@ public class SceneRender {
         uniformsMap.setUniform(prefix + ".att.constant", constant);
         uniformsMap.setUniform(prefix + ".att.linear", linear);
         uniformsMap.setUniform(prefix + ".att.exponent", exponent);
+    }
+
+    private void createHUD() {
+        ShaderProgram textShader = new ShaderProgram("resources/shaders/text.vert", "resources/shaders/text.frag");
+        font = new Font("Arial", Font.BOLD, 32);
+        scoreTexture = new TextTexture(256, 64);
+        starsTexture = new TextTexture(256, 64);
+        resultTexture = new TextTexture(256, 64);
+
+        textRenderer = new TextRender(textShader);
+    }
+
+    public void renderHUD(int windowWidth, int windowHeight, Scene scene) {
+        scoreTexture.updateText("Score: " + scene.getScore(), font, Color.WHITE);
+        starsTexture.updateText("Stars: " + scene.getStarCount(), font, Color.WHITE);
+        textRenderer.render(scoreTexture.getTextureId(), 20, 20, 256, 64, windowWidth, windowHeight);
+        textRenderer.render(starsTexture.getTextureId(), 236, 20, 256, 64, windowWidth, windowHeight);
+
+        if (scene.getResult() == 0) {
+            resultTexture.updateText("DEFEAT!", font, Color.RED);
+
+        } else if (scene.getResult() == 1) {
+            resultTexture.updateText("VICTORY!", font, Color.GREEN);
+        } else {
+            resultTexture.updateText("", font, Color.WHITE);
+        }
+
+        textRenderer.render(resultTexture.getTextureId(), (windowWidth - 256) / 2f, (windowHeight - 64) / 2f, 256, 64, windowWidth, windowHeight);
+
     }
 }

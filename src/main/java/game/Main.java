@@ -60,6 +60,7 @@ public class Main implements EngineLogic {
         if (window.isKeyPressed(GLFW_KEY_UP)) {
             scene.getPointLights().get(0).setPosition(scene.getPointLights().get(0).getPosition().x + 0.1f, scene.getPointLights().get(0).getPosition().y, scene.getPointLights().get(0).getPosition().z);
         }
+
     }
 
     @Override

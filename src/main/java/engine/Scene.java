@@ -34,6 +34,7 @@ public class Scene {
 
     private Entity starEntity;
     private int starCount;
+    private int result;
 
     private Entity[] enemyEntities;
     private int score;
@@ -63,6 +64,8 @@ public class Scene {
 
         generateEnemies();
         score = 0;
+
+        result = -1;
     }
 
     public void addEntity(Entity entity) {
@@ -126,6 +129,22 @@ public class Scene {
         return bezierCurve;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public int getStarCount() {
+        return starCount;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
+    }
+
     public void setCurveTime(float curveTime) {
         this.curveTime = curveTime;
     }
@@ -177,6 +196,7 @@ public class Scene {
                 AABB otherBox = e.getAABB();
                 if (AABB.intersects(playerBox, otherBox)) {
                     collided = true;
+
                     if (e.getId().equals(starEntity.getId())) {
                         Random rand = new Random();
                         float randomX = 20 + rand.nextFloat() * (60 - 20);
@@ -201,9 +221,17 @@ public class Scene {
                             score = 0;
                             starCount = 0;
                             collided = false;
-                        }
 
+                            result = 0;
+                        }
                     }
+
+                    if (score >= 10 && starCount >= 3) {
+                        result = 1;
+                        score = 0;
+                        starCount = 0;
+                    }
+
                     break;
                 }
             }

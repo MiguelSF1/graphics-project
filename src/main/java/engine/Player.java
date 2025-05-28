@@ -42,6 +42,8 @@ public class Player extends Entity {
             if (!isInAir) {
                 curUpSpeed = JUMP_POWER;
                 isInAir = true;
+
+                scene.setResult(-1);
             }
         }
 
