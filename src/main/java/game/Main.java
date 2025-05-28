@@ -13,9 +13,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Main implements EngineLogic {
 
     Entity tableEntity;
-    Entity midArmEntity;
-    Entity baseArmEntity;
-    Entity endArmEntity;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -49,7 +46,6 @@ public class Main implements EngineLogic {
         tableEntity.setPosition(40, tableHeight, 15);
         scene.addEntity(tableEntity);
 
-        generateArm(scene);
     }
 
     @Override
@@ -80,53 +76,22 @@ public class Main implements EngineLogic {
         Vector3f pos = scene.getBezierCurve().evaluateAtTime(scene.getCurveTime());
         scene.getMovingEntity().setPosition(pos.x, pos.y, pos.z);
 
-        midArmEntity.incrementRotation(0, 2, 0);
-        endArmEntity.incrementRotation(1, 0, 0);
-        baseArmEntity.incrementPosition(0, 0, 0.01f);
 
-    }
+        float time = scene.getCurveTime();
+        float walkSpeed = 3f;
+        float walkAmplitude = 30f;
 
+        for (int i = 0; i < scene.getFootEntitiesL().size(); i++) {
+            Entity leftFoot = scene.getFootEntitiesL().get(i);
+            Entity rightFoot = scene.getFootEntitiesR().get(i);
 
-    public void generateArm(Scene scene) {
-        Material armMaterial = new Material();
-        List<Material> armMaterialList = new ArrayList<>();
-        armMaterialList.add(armMaterial);
+            // Sinusoidal rotation
+            float angleL = (float)Math.sin(time * walkSpeed * 2 * Math.PI) * walkAmplitude;
+            float angleR = (float)Math.sin(time * walkSpeed * 2 * Math.PI + Math.PI) * walkAmplitude;
 
-        Mesh baseArmMesh = OBJLoader.loadMeshFromOBJ("resources/models/arm/arm-base.obj");
-        armMaterial.getMeshList().add(baseArmMesh);
-        Model baseArmModel = new Model("base-arm-model", armMaterialList);
-        scene.addModel(baseArmModel);
+            leftFoot.setRotation(angleL, 90, 0);
+            rightFoot.setRotation(angleR, 90, 0);
+        }
 
-        Material armMidMaterial = new Material();
-        List<Material> armMidMaterialList = new ArrayList<>();
-        armMidMaterialList.add(armMidMaterial);
-
-        Mesh midArmMesh = OBJLoader.loadMeshFromOBJ("resources/models/arm/arm-mid.obj");
-        armMidMaterial.getMeshList().add(midArmMesh);
-        Model midArmModel = new Model("mid-arm-model", armMidMaterialList);
-        scene.addModel(midArmModel);
-
-        Material armEndMaterial = new Material();
-        List<Material> armEndMaterialList = new ArrayList<>();
-        armEndMaterialList.add(armEndMaterial);
-
-        Mesh endArmMesh = OBJLoader.loadMeshFromOBJ("resources/models/arm/arm-end.obj");
-        armEndMaterial.getMeshList().add(endArmMesh);
-        Model endArmModel = new Model("end-arm-model", armEndMaterialList);
-        scene.addModel(endArmModel);
-
-        baseArmEntity = new Entity("base-arm-entity", "base-arm-model", baseArmMesh);
-        baseArmEntity.setPosition(40, 5, 80);
-        scene.addEntity(baseArmEntity);
-
-        midArmEntity = new Entity("mid-arm-entity", "mid-arm-model", midArmMesh);
-        midArmEntity.setParent(baseArmEntity);
-        midArmEntity.setPosition(0, 1 ,0);
-        scene.addEntity(midArmEntity);
-
-        endArmEntity = new Entity("end-arm-entity", "end-arm-model", endArmMesh);
-        endArmEntity.setParent(midArmEntity);
-        endArmEntity.setPosition(0, 1, 0);
-        scene.addEntity(endArmEntity);
     }
 }

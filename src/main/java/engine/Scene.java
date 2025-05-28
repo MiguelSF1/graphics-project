@@ -39,6 +39,9 @@ public class Scene {
     private Entity[] enemyEntities;
     private BezierCurve[] enemyCurves;
     private int score;
+    private List<Entity> footEntitiesL;
+    private List<Entity> footEntitiesR;
+
 
 
     public Scene(int width, int height) {
@@ -62,6 +65,9 @@ public class Scene {
 
         generateStar();
         starCount = 0;
+
+        footEntitiesL = new ArrayList<>();
+        footEntitiesR = new ArrayList<>();
 
         generateEnemies();
         score = 0;
@@ -128,6 +134,14 @@ public class Scene {
 
     public BezierCurve getBezierCurve() {
         return bezierCurve;
+    }
+
+    public List<Entity> getFootEntitiesL() {
+        return footEntitiesL;
+    }
+
+    public List<Entity> getFootEntitiesR() {
+        return footEntitiesR;
     }
 
     public int getScore() {
@@ -345,6 +359,16 @@ public class Scene {
         Model enemyModel = new Model("enemy-model", enemyMaterialList);
         addModel(enemyModel);
 
+        Material footMaterial = new Material();
+        getTextureCache().createTexture("resources/models/goomba/goomba-foot.png");
+        footMaterial.setTexturePath("resources/models/goomba/goomba-foot.png");
+        List<Material> footMaterialList = new ArrayList<>();
+        footMaterialList.add(footMaterial);
+        Mesh footMesh = OBJLoader.loadMeshFromOBJ("resources/models/goomba/goomba-foot.obj");
+        footMaterial.getMeshList().add(footMesh);
+        Model footModel = new Model("foot-model", footMaterialList);
+        addModel(footModel);
+
         Random rand = new Random();
         for (int i = 0; i < enemyEntities.length; i++) {
             enemyEntities[i] = new Entity("enemy-entity:" + i, "enemy-model", enemyMesh);
@@ -353,6 +377,22 @@ public class Scene {
             float enemyY = terrain.getTerrainHeight(enemyX, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
             enemyEntities[i].setPosition(enemyX, enemyY + 0.4f, enemyZ);
             addEntity(enemyEntities[i]);
+
+            Entity footEntityL = new Entity("foot-entityL:" + i, "foot-model", footMesh);
+            footEntityL.setParent(enemyEntities[i]);
+            footEntityL.setPosition(0.5f, -1.5f, 0);
+            footEntityL.setRotation(0, 90, 0);
+            footEntityL.setScale(6);
+            addEntity(footEntityL);
+            footEntitiesL.add(footEntityL);
+
+            Entity footEntityR = new Entity("foot-entityR:" + i, "foot-model", footMesh);
+            footEntityR.setParent(enemyEntities[i]);
+            footEntityR.setPosition(-0.5f, -1.5f, 0);
+            footEntityR.setRotation(0, 90, 0);
+            footEntityR.setScale(6);
+            addEntity(footEntityR);
+            footEntitiesR.add(footEntityR);
 
             enemyCurves[i] = new BezierCurve();
             generateCurves(enemyCurves[i], enemyX, enemyY, enemyZ, enemyMesh);
@@ -372,26 +412,26 @@ public class Scene {
     }
 
     private void generateCurves(BezierCurve enemyCurve, float enemyX, float enemyY, float enemyZ, Mesh enemyMesh) {
-        enemyCurve.addControlPoint(new Vector3f(enemyX, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX, enemyY + 1.0f, enemyZ));
 
         enemyY = terrain.getTerrainHeight(enemyX + 5, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
-        enemyCurve.addControlPoint(new Vector3f(enemyX + 5, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX + 5, enemyY + 1.0f, enemyZ));
 
         enemyY = terrain.getTerrainHeight(enemyX + 10, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
-        enemyCurve.addControlPoint(new Vector3f(enemyX + 10, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX + 10, enemyY + 1.0f, enemyZ));
 
         enemyY = terrain.getTerrainHeight(enemyX + 15, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
-        enemyCurve.addControlPoint(new Vector3f(enemyX + 15, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX + 15, enemyY + 1.0f, enemyZ));
 
 
         enemyY = terrain.getTerrainHeight(enemyX + 10, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
-        enemyCurve.addControlPoint(new Vector3f(enemyX + 10, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX + 10, enemyY + 1.0f, enemyZ));
 
 
         enemyY = terrain.getTerrainHeight(enemyX + 5, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
-        enemyCurve.addControlPoint(new Vector3f(enemyX + 5, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX + 5, enemyY + 1.0f, enemyZ));
 
         enemyY = terrain.getTerrainHeight(enemyX, enemyZ) + (enemyMesh.getAabbMax().y - enemyMesh.getAabbMin().y) * 0.5f;
-        enemyCurve.addControlPoint(new Vector3f(enemyX, enemyY + 0.4f, enemyZ));
+        enemyCurve.addControlPoint(new Vector3f(enemyX, enemyY + 1.0f, enemyZ));
     }
 }
