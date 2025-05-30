@@ -251,7 +251,7 @@ public class Scene {
                         }
                     }
 
-                    if (score >= 1 && starCount >= 1) {
+                    if (score >= 10 && starCount >= 3) {
                         result = 1;
                         score = 0;
                         starCount = 0;
