@@ -251,10 +251,13 @@ public class Scene {
                         }
                     }
 
-                    if (score >= 10 && starCount >= 3) {
+                    if (score >= 1 && starCount >= 1) {
                         result = 1;
                         score = 0;
                         starCount = 0;
+                        collided = false;
+                        float playerHeight = terrain.getTerrainHeight(40, 15) + (player.getMesh().getAabbMax().y - player.getMesh().getAabbMin().y) * 0.5f;
+                        player.setPosition(40, playerHeight + 3.4f, 15);
                     }
 
                     break;
