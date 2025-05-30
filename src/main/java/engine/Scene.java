@@ -183,8 +183,9 @@ public class Scene {
     private void addPlayer() {
         Material material = new Material();
         List<Material> materialList = new ArrayList<>();
+        getTextureCache().createTexture("resources/models/sheep/sheep.png");
+        material.setTexturePath("resources/models/sheep/sheep.png");
         materialList.add(material);
-
         Mesh playerMesh = OBJLoader.loadMeshFromOBJ("resources/models/sheep/sheep.obj");
         material.getMeshList().add(playerMesh);
         Model playerModel = new Model("player-model", materialList);
