@@ -38,6 +38,7 @@ public class TextTexture {
         ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
+                // extract the red, green, blue, and alpha channels from the pixel value and write to buffer in rgba order
                 int pixel = pixels[y * width + x];
                 buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red
                 buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green

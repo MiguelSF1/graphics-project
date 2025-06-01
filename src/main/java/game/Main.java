@@ -85,7 +85,7 @@ public class Main implements EngineLogic {
             Entity leftFoot = scene.getFootEntitiesL().get(i);
             Entity rightFoot = scene.getFootEntitiesR().get(i);
 
-            // Sinusoidal rotation
+            // Sinusoidal rotation || angle of rotation changes in a smooth way
             float angleL = (float)Math.sin(time * walkSpeed * 2 * Math.PI) * walkAmplitude;
             float angleR = (float)Math.sin(time * walkSpeed * 2 * Math.PI + Math.PI) * walkAmplitude;
 

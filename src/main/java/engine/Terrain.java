@@ -99,16 +99,18 @@ public class Terrain {
 
     public float getTerrainHeight(float x, float z) {
         float gridSquareSize = SIZE / (float)(heights.length - 1);
-        int gridX = (int)Math.floor(x / gridSquareSize);
+        int gridX = (int)Math.floor(x / gridSquareSize); // find square
         int gridZ = (int)Math.floor(z / gridSquareSize);
-        if (gridX >= heights.length - 1 || gridZ >= heights.length - 1 || gridX < 0 || gridZ < 0) {
+        if (gridX >= heights.length - 1 || gridZ >= heights.length - 1 || gridX < 0 || gridZ < 0) { // check out of bounds
             return 0;
         }
 
+        // normalize
         float xCoord = (x % gridSquareSize) / gridSquareSize;
         float zCoord = (z % gridSquareSize) / gridSquareSize;
         float side;
 
+        // grid square is made up of 2 triangles | determine which one to use (upper left or bottom right)
         if (xCoord <= (1-zCoord)) {
             side = barryCentric(new Vector3f(0, heights[gridX][gridZ], 0), new Vector3f(1,
                             heights[gridX + 1][gridZ], 0), new Vector3f(0,
@@ -122,11 +124,13 @@ public class Terrain {
         return side;
     }
 
+    // finds how much weight to assign each vertex to calculate height at that position.
     public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
         float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
         float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
         float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
         float l3 = 1.0f - l1 - l2;
+        // The output is a smooth interpolated height from the 3 corners
         return l1 * p1.y + l2 * p2.y + l3 * p3.y;
     }
 
